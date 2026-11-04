@@ -1,0 +1,47 @@
+version: "2"
+
+run:
+  timeout: 5m
+  tests: true
+
+linters:
+  enable:
+    # Core
+    - errcheck
+    - govet
+    - ineffassign
+    - staticcheck
+    - unused
+
+    # Security & Critical
+    - gosec
+    - bodyclose
+    - forcetypeassert
+    - sqlclosecheck
+    - rowserrcheck
+
+    # Reliability & Logic
+    - errorlint
+    - nilnil
+    - nilerr
+    - durationcheck
+    - makezero
+
+    # Quality & Modernity
+    - modernize
+    - gocritic
+    - unparam
+    - unconvert
+    - prealloc
+
+    # Tests
+    - testifylint
+
+formatters:
+  enable:
+    - gofmt
+    - goimports
+
+issues:
+  max-issues-per-linter: 0
+  max-same-issues: 0
