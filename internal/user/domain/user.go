@@ -5,19 +5,17 @@ import (
 	"time"
 )
 
-var ()
-
 type UserInput struct {
 	Name     string
 	Email    string
-	Password string
+	Password *string
 }
 
 type RawUser struct {
 	ID        string
 	Name      string
 	Email     string
-	Password  string
+	Password  *string
 	IsActive  bool
 	CreatedAt time.Time
 	UpdatedAt time.Time
@@ -27,7 +25,7 @@ type User struct {
 	ID        UserID
 	Name      UserName
 	Email     UserEmail
-	Password  UserPassword
+	Password  *UserPassword
 	IsActive  bool
 	CreatedAt time.Time
 	UpdatedAt time.Time
@@ -49,9 +47,13 @@ func NewUser(input *UserInput) (User, error) {
 		return User{}, fmt.Errorf("parse user email: %w", err)
 	}
 
-	passwordHash, err := NewUserPassword(input.Password)
-	if err != nil {
-		return User{}, fmt.Errorf("parse user password: %w", err)
+	var password *UserPassword
+	if input.Password != nil {
+		ph, err := NewUserPassword(input.Password)
+		if err != nil {
+			return User{}, fmt.Errorf("parse user password: %w", err)
+		}
+		password = &ph
 	}
 
 	now := time.Now().UTC()
@@ -59,7 +61,7 @@ func NewUser(input *UserInput) (User, error) {
 		ID:        id,
 		Name:      name,
 		Email:     email,
-		Password:  passwordHash,
+		Password:  password,
 		IsActive:  true,
 		CreatedAt: now,
 		UpdatedAt: now,
@@ -83,20 +85,20 @@ func UserFromRaw(raw RawUser) (User, error) {
 		return User{}, fmt.Errorf("parse user email: %w", err)
 	}
 
-	passwordHash, err := NewUserPassword(raw.Password)
-	if err != nil {
-		return User{}, fmt.Errorf("parse user password: %w", err)
+	var password *UserPassword
+	if raw.Password != nil {
+		ph := PasswordFromRaw(*raw.Password)
+		password = &ph
 	}
 
-	now := time.Now().UTC()
 	return User{
 		ID:        id,
 		Name:      name,
 		Email:     email,
-		Password:  passwordHash,
-		IsActive:  true,
-		CreatedAt: now,
-		UpdatedAt: now,
+		Password:  password,
+		IsActive:  raw.IsActive,
+		CreatedAt: raw.CreatedAt,
+		UpdatedAt: raw.UpdatedAt,
 	}, nil
 }
 
@@ -119,7 +121,7 @@ func (u *User) UpdateEmail(raw string) error {
 }
 
 func (u *User) UpdatePassword(newPass, oldPass string) error {
-	pass, err := NewUserPassword(newPass)
+	pass, err := NewUserPassword(&newPass)
 	if err != nil {
 		return fmt.Errorf("parse user email: %w", err)
 	}
@@ -127,7 +129,7 @@ func (u *User) UpdatePassword(newPass, oldPass string) error {
 		return ErrInvalidCredentials
 	}
 
-	u.Password = pass
+	u.Password = &pass
 	return nil
 }
 

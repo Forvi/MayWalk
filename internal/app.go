@@ -12,9 +12,13 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/Forvi/MayWalk/internal/auth/oauth"
+	"github.com/Forvi/MayWalk/internal/auth/session"
+	"github.com/Forvi/MayWalk/internal/common/cache"
 	"github.com/Forvi/MayWalk/internal/common/config"
 	"github.com/Forvi/MayWalk/internal/common/database"
 	"github.com/Forvi/MayWalk/internal/common/log"
+	"github.com/Forvi/MayWalk/internal/common/middleware"
 	"github.com/Forvi/MayWalk/internal/health"
 	userRepoPsql "github.com/Forvi/MayWalk/internal/user/adapters/repository/postgres"
 	userHttp "github.com/Forvi/MayWalk/internal/user/adapters/transport/http"
@@ -90,14 +94,47 @@ func buildApp(mux *http.ServeMux, logger *slog.Logger) error {
 		return fmt.Errorf("init database: %w", err)
 	}
 
+	cache, err := cache.NewCache(&cfg.CacheConfig, logger)
+	if err != nil {
+		return fmt.Errorf("init database: %w", err)
+	}
+
+	sessions := session.NewSessionCache(cache.Redis, &cfg.SessionConfig)
+	auth := middleware.RequireAuth(sessions, cfg.SessionConfig.Secret)
+
 	healthHandler := health.NewHealthHandler()
 	mux.HandleFunc("/health", healthHandler.Health)
 
+	yaOAuth := oauth.NewYaOAuth(&cfg.OAuthConfig)
+	OAuthRepo := userRepoPsql.NewOAuthRepo(db)
 	userRepo := userRepoPsql.NewUserRepo(db)
-	userCreateUsecase := userUsecases.NewCreateUserUsecase(userRepo)
+	userRegisterUsecase := userUsecases.NewRegisterUserUsecase(userRepo)
 	userInactiveUsecase := userUsecases.NewInactiveUsecase(userRepo)
-	userHandler := userHttp.NewUserHandler(logger, userCreateUsecase, userInactiveUsecase)
-	userHttp.Routes(mux, userHandler)
+	userFindUsecase := userUsecases.NewFindUsecase(userRepo)
+	userLoginUsecase := userUsecases.NewLoginUsecase(&cfg.SessionConfig, sessions, userRepo)
+	userLogoutUsecase := userUsecases.NewLogoutUsecase(sessions)
+	userRefreshUsecase := userUsecases.NewRefreshUsecase(&cfg.SessionConfig, sessions)
+	yaSignInUsecase := userUsecases.NewYaSignInUsecase(
+		yaOAuth,
+		&cfg.SessionConfig,
+		sessions,
+		userRepo,
+		OAuthRepo,
+		userRegisterUsecase,
+		userLoginUsecase,
+	)
+	userHandler := userHttp.NewUserHandler(
+		logger,
+		&cfg.SessionConfig,
+		userRegisterUsecase,
+		userInactiveUsecase,
+		userFindUsecase,
+		userLoginUsecase,
+		userLogoutUsecase,
+		userRefreshUsecase,
+		yaSignInUsecase,
+	)
+	userHttp.Routes(mux, userHandler, auth)
 
 	return nil
 }

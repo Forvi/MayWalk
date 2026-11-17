@@ -7,13 +7,21 @@ import (
 	"strings"
 	"time"
 
+	"github.com/Forvi/MayWalk/internal/common/errs"
 	"github.com/Forvi/MayWalk/internal/user/adapters/repository/models"
 	"github.com/Forvi/MayWalk/internal/user/domain"
-	"github.com/jackc/pgerrcode"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgconn"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
+
+var ErrEmptyUpdates = errs.New(errs.TypeInternal, "empty_updates", "no updates fields")
+
+type querier interface {
+	Exec(ctx context.Context, sql string, arguments ...any) (pgconn.CommandTag, error)
+	Query(ctx context.Context, sql string, args ...any) (pgx.Rows, error)
+	QueryRow(ctx context.Context, sql string, args ...any) pgx.Row
+}
 
 type UserRepo struct {
 	db *pgxpool.Pool
@@ -23,23 +31,44 @@ func NewUserRepo(db *pgxpool.Pool) *UserRepo {
 	return &UserRepo{db: db}
 }
 
-func (repo *UserRepo) Save(ctx context.Context, user domain.User) error {
-	exists, err := repo.FindByID(ctx, user.ID)
+func (repo *UserRepo) BeginTx(ctx context.Context) (pgx.Tx, error) {
+	return repo.db.Begin(ctx)
+}
+
+func (repo *UserRepo) SaveWithTx(ctx context.Context, user domain.User, tx pgx.Tx) (*domain.User, error) {
+	exists, err := repo.findByIDWithQuerier(ctx, user.ID, tx)
 	if err != nil {
 		if !errors.Is(err, domain.ErrNotFound) {
-			return err
+			return nil, err
 		}
 	}
 	if exists != nil {
-		return repo.update(ctx, user, *exists)
+		return repo.update(ctx, &user, exists, tx)
 	}
-	return repo.create(ctx, user)
+	return repo.create(ctx, &user, tx)
 }
 
-func (repo *UserRepo) FindByID(ctx context.Context, id domain.UserID) (*domain.User, error) {
-	query := `SELECT id, username, email, password_hash, is_active, created_at, updated_at FROM users WHERE id=$1`
+func (repo *UserRepo) Save(ctx context.Context, user domain.User) (*domain.User, error) {
+	exists, err := repo.FindByID(ctx, user.ID)
+	if err != nil {
+		if !errors.Is(err, domain.ErrNotFound) {
+			return nil, err
+		}
+	}
+	if exists != nil {
+		return repo.update(ctx, &user, exists, repo.db)
+	}
+	return repo.create(ctx, &user, repo.db)
+}
 
-	rows, err := repo.db.Query(ctx, query, &id)
+func (repo *UserRepo) FindByName(ctx context.Context, name domain.UserName) (*domain.User, error) {
+	query := `
+	SELECT id, username, email, password_hash, is_active, created_at, updated_at 
+	FROM users 
+	WHERE username=$1 AND is_active=true;
+	`
+
+	rows, err := repo.db.Query(ctx, query, &name)
 	if err != nil {
 		return nil, fmt.Errorf("query user: %w", err)
 	}
@@ -56,31 +85,87 @@ func (repo *UserRepo) FindByID(ctx context.Context, id domain.UserID) (*domain.U
 	return userRow.ToDomain()
 }
 
-func (repo *UserRepo) create(ctx context.Context, user domain.User) error {
-	query := `
-        INSERT INTO users (id, username, email, password_hash, is_active, created_at, updated_at) 
-        VALUES ($1, $2, $3, $4, $5, $6, $7);
-    `
-	_, err := repo.db.Exec(ctx, query,
+func (repo *UserRepo) FindByID(ctx context.Context, id domain.UserID) (*domain.User, error) {
+	return repo.findByIDWithQuerier(ctx, id, repo.db)
+}
+
+func (repo *UserRepo) FindByEmail(ctx context.Context, email domain.UserEmail) (*domain.User, error) {
+	query := `SELECT id, username, email, password_hash, is_active, created_at, updated_at 
+              FROM users 
+              WHERE email=$1 AND is_active=true`
+
+	rows, err := repo.db.Query(ctx, query, &email)
+	if err != nil {
+		return nil, fmt.Errorf("query user: %w", err)
+	}
+	defer rows.Close()
+
+	userRow, err := pgx.CollectExactlyOneRow(rows, pgx.RowToStructByName[models.DBUser])
+	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, domain.ErrNotFound
+		}
+		return nil, fmt.Errorf("collect user: %w", err)
+	}
+
+	return userRow.ToDomain()
+}
+
+func (repo *UserRepo) IsUsernameAvailable(ctx context.Context, name domain.UserName) (bool, error) {
+	query := `SELECT NOT EXISTS(SELECT 1 FROM users WHERE username = $1)`
+
+	var available bool
+	err := repo.db.QueryRow(ctx, query, name).Scan(&available)
+	if err != nil {
+		return false, fmt.Errorf("check username availability: %w", err)
+	}
+
+	return available, nil
+}
+
+func (repo *UserRepo) findByIDWithQuerier(ctx context.Context, id domain.UserID, q querier) (*domain.User, error) {
+	query := `SELECT id, username, email, password_hash, is_active, created_at, updated_at FROM users WHERE id=$1`
+
+	rows, err := q.Query(ctx, query, &id)
+	if err != nil {
+		return nil, fmt.Errorf("query user: %w", err)
+	}
+	defer rows.Close()
+
+	userRow, err := pgx.CollectExactlyOneRow(rows, pgx.RowToStructByName[models.DBUser])
+	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, domain.ErrNotFound
+		}
+		return nil, fmt.Errorf("collect user: %w", err)
+	}
+
+	return userRow.ToDomain()
+}
+
+func (repo *UserRepo) create(ctx context.Context, user *domain.User, q querier) (*domain.User, error) {
+	query := `INSERT INTO users (id, username, email, password_hash, is_active, created_at, updated_at) 
+			  VALUES ($1, $2, $3, $4, $5, $6, $7)
+     		  ON CONFLICT (id) DO NOTHING;`
+
+	result, err := q.Exec(ctx, query,
 		user.ID, user.Name, user.Email, user.Password,
 		user.IsActive, user.CreatedAt, user.UpdatedAt,
 	)
 	if err != nil {
-		var pgErr *pgconn.PgError
-		if errors.As(err, &pgErr) {
-			if pgErr.Code == pgerrcode.UniqueViolation {
-				return domain.ErrAlreadyExists
-			}
-		}
-		return fmt.Errorf("execute insert user query: %w", err)
+		return nil, fmt.Errorf("insert user: %w", err)
 	}
-	return nil
+	if result.RowsAffected() == 0 {
+		return nil, domain.ErrAlreadyExists
+	}
+
+	return user, nil
 }
 
-func (repo *UserRepo) update(ctx context.Context, user, exists domain.User) error {
+func (repo *UserRepo) update(ctx context.Context, user, exists *domain.User, q querier) (*domain.User, error) {
 	updates := repo.diff(user, exists)
-	if len(updates) == 0 {
-		return nil
+	if len(updates) == 1 {
+		return nil, ErrEmptyUpdates
 	}
 	setClauses := make([]string, 0, len(updates))
 	args := make([]any, 0, len(updates)+1)
@@ -98,15 +183,11 @@ func (repo *UserRepo) update(ctx context.Context, user, exists domain.User) erro
 		strings.Join(setClauses, ", "), i,
 	)
 
-	for _, a := range args {
-		fmt.Printf("%v, ", a)
-	}
-
-	_, err := repo.db.Exec(ctx, query, args...)
-	return err
+	_, err := q.Exec(ctx, query, args...)
+	return user, err
 }
 
-func (repo *UserRepo) diff(user, exists domain.User) map[string]any {
+func (repo *UserRepo) diff(user, exists *domain.User) map[string]any {
 	updates := make(map[string]any)
 	if exists.Name != user.Name {
 		updates["username"] = user.Name

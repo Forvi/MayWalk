@@ -13,5 +13,5 @@ func NewHealthHandler() *HealthHandler {
 
 func (hh *HealthHandler) Health(w http.ResponseWriter, r *http.Request) {
 	res, _ := json.Marshal(map[string]string{"status": "ok"})
-	w.Write(res)
+	_, _ = w.Write(res)
 }

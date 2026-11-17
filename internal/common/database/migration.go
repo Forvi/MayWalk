@@ -19,7 +19,10 @@ func RunMigrate(dbURL string, logger *slog.Logger) error {
 	if err != nil {
 		return err
 	}
-	defer m.Close()
+	defer func() {
+		_, err = m.Close()
+		logger.Error("close database connetion after migrate", "err", err)
+	}()
 
 	if err := m.Up(); err != nil {
 		if errors.Is(err, migrate.ErrNoChange) {

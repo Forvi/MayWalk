@@ -8,7 +8,7 @@ import (
 )
 
 type UserFindSaver interface {
-	Save(ctx context.Context, user domain.User) error
+	Save(ctx context.Context, user domain.User) (*domain.User, error)
 	FindByID(ctx context.Context, id domain.UserID) (*domain.User, error)
 }
 
@@ -31,7 +31,8 @@ func (uc *InactiveUserUsecase) Execute(ctx context.Context, id string) error {
 		return fmt.Errorf("find user: %w", err)
 	}
 	user.Inactive()
-	if err := uc.repo.Save(ctx, *user); err != nil {
+	_, err = uc.repo.Save(ctx, *user)
+	if err != nil {
 		return fmt.Errorf("inactive user by id: %w", err)
 	}
 	return nil

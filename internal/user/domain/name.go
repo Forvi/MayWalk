@@ -2,13 +2,14 @@ package domain
 
 import (
 	"strings"
+	"unicode"
 
 	"github.com/Forvi/MayWalk/internal/common/errs"
 )
 
 var (
 	ErrCodeNameInvalid = "user.name.invalid"
-	NameMessageInvalid = "name is empty"
+	NameMessageInvalid = "name is empty or contains invalid characters"
 )
 
 type UserName string
@@ -16,7 +17,17 @@ type UserName string
 func NewUserName(raw string) (UserName, error) {
 	name := strings.TrimSpace(raw)
 	if name == "" {
+		return "", errs.New(errs.TypeValidation, ErrCodeNameInvalid, "name is empty")
+	}
+
+	if strings.Contains(name, ":") {
 		return "", errs.New(errs.TypeValidation, ErrCodeNameInvalid, NameMessageInvalid)
+	}
+
+	for _, r := range name {
+		if !unicode.IsLetter(r) && !unicode.IsDigit(r) && r != '_' && r != '-' {
+			return "", errs.New(errs.TypeValidation, ErrCodeNameInvalid, NameMessageInvalid)
+		}
 	}
 
 	return UserName(name), nil

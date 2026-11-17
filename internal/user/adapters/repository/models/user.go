@@ -11,7 +11,7 @@ type DBUser struct {
 	ID        string    `db:"id"`
 	Name      string    `db:"username"`
 	Email     string    `db:"email"`
-	Password  string    `db:"password_hash"`
+	Password  *string   `db:"password_hash"`
 	IsActive  bool      `db:"is_active"`
 	CreatedAt time.Time `db:"created_at"`
 	UpdatedAt time.Time `db:"updated_at"`

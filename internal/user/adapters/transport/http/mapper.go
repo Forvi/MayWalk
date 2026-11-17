@@ -6,12 +6,19 @@ import (
 	"net/http"
 
 	"github.com/Forvi/MayWalk/internal/common/errs"
+	"github.com/Forvi/MayWalk/internal/user/domain"
 )
 
 func mapError(err error, logger *slog.Logger) (int, errs.ErrorHttpResponse) {
-	var appErr *errs.Err
+	if errors.Is(err, domain.ErrAccountInactive) {
+		logger.Warn("account inactive", "error", err)
+		return http.StatusForbidden, errs.ErrorHttpResponse{
+			Code:    "auth.account_inactive",
+			Message: "Your account has been deactivated. Please contact support.",
+		}
+	}
 
-	if errors.As(err, &appErr) {
+	if appErr, ok := errors.AsType[*errs.Err](err); ok {
 		logger.Warn(appErr.Message, "type", appErr.Type, "code", appErr.Code)
 		switch appErr.Type {
 		case errs.TypeValidation:
