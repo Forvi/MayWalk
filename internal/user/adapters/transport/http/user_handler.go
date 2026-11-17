@@ -136,7 +136,7 @@ func (h *UserHandler) UserYaSignIn(w http.ResponseWriter, r *http.Request) {
 		SameSite: http.SameSiteLaxMode,
 		MaxAge:   600,
 	})
-	h.respond(w, http.StatusTemporaryRedirect, map[string]string{"url": url})
+	http.Redirect(w, r, url, http.StatusFound)
 }
 
 func (h *UserHandler) LoginUser(w http.ResponseWriter, r *http.Request) {
