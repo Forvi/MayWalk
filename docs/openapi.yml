@@ -1,0 +1,316 @@
+openapi: 3.1.0
+info:
+  title: MayWalk API
+  version: 0.1.0
+  description: Документация API backend-части веб-сайта мероприятия "Майская прогулка"
+
+servers:
+  - url: http://localhost:8080
+    description: MayWalk localhost
+  - url: http://maywalk-test:8080
+    description: MayWalk test
+  - url: http://maywalk:8080
+    description: MayWalk production
+
+tags:
+  - name: user
+    description: Управление и пользователем, базовая авторизация и авторизация через OAuth YandexID. Авторизация реализована на основе сессий, session_id сохраняется в cookie.
+
+paths:
+  /user/register:
+    post:
+      operationId: PostUserRegister
+      summary: Регистрирует нового пользователя
+      tags:
+        - user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RegisterUserRequest"
+      responses:
+        "201":
+          description: User created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "409":
+          $ref: "#/components/responses/Conflict"
+
+  /user/login:
+    post:
+      operationId: PostUserLogin
+      summary: Авторизует или обновляет существующую сессию пользователя; как логин принимается username и почта
+      tags:
+        - user
+      parameters:
+        - $ref: "#/components/parameters/SessionCookieOptional"
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginUserRequest"
+      responses:
+        "204":
+          description: Login successful or session refreshed
+          headers:
+            Set-Cookie:
+              $ref: "#/components/headers/SetSessionCookie"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+
+  /user/logout:
+    post:
+      operationId: PostUserLogout
+      summary: Позволяет пользователю выйти из аккаунта и удаляет сессию
+      tags:
+        - user
+      parameters:
+        - $ref: "#/components/parameters/SessionCookieOptional"
+      responses:
+        "204":
+          description: Logged out
+          headers:
+            Set-Cookie:
+              $ref: "#/components/headers/ClearSessionCookie"
+
+  /user/signin/yandex:
+    get:
+      operationId: GetUserSigninYandex
+      summary: Позволяет авторизоваться через YandexID; формирует ссылку авторизации редиректит на неё
+      tags:
+        - user
+      responses:
+        "302":
+          description: Redirect to Yandex authorization
+          headers:
+            Set-Cookie:
+              $ref: "#/components/headers/SetPkceCookie"
+            Location:
+              schema:
+                type: string
+              description: Yandex authorization URL
+
+  /user/signin/yandex/callback:
+    get:
+      operationId: GetUserSigninYandexCallback
+      summary: Callback-ссылка редиректа для авторизации YandexID; технический endpoint
+      tags:
+        - user
+      parameters:
+        - name: code
+          in: query
+          required: true
+          schema:
+            type: string
+        - $ref: "#/components/parameters/PkceCookie"
+      responses:
+        "200":
+          description: OAuth login successful
+          headers:
+            Set-Cookie:
+              description: Set session_id and clear pkce_verifier
+              schema:
+                type: string
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+
+  /user/{id}/inactive:
+    patch:
+      operationId: PatchUserIdInactive
+      summary: Деактивация/мягкое удаление пользователя
+      tags:
+        - user
+      security:
+        - cookieAuth: []
+      parameters:
+        - $ref: "#/components/parameters/UserId"
+        - $ref: "#/components/parameters/SessionCookieOptional"
+      responses:
+        "204":
+          description: User deactivated
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+
+  /user/{id}:
+    get:
+      operationId: GetUserId
+      summary: Находит и возвращает пользователя по его ID
+      tags:
+        - user
+      security:
+        - cookieAuth: []
+      parameters:
+        - $ref: "#/components/parameters/UserId"
+        - $ref: "#/components/parameters/SessionCookieOptional"
+      responses:
+        "200":
+          description: User found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+
+components:
+  schemas:
+    RegisterUserRequest:
+      type: object
+      required:
+        - name
+        - email
+        - password
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+
+    LoginUserRequest:
+      type: object
+      required:
+        - login
+        - password
+      properties:
+        login:
+          type: string
+        password:
+          type: string
+        remember_me:
+          type: boolean
+          default: false
+
+    UserResponse:
+      type: object
+      required:
+        - id
+        - name
+        - email
+        - is_active
+        - created_at
+        - updated_at
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        email:
+          type: string
+        is_active:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    ErrorResponse:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+
+  parameters:
+    UserId:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: string
+
+    SessionCookieOptional:
+      name: session_id
+      in: cookie
+      required: false
+      schema:
+        type: string
+
+    PkceCookie:
+      name: pkce_verifier
+      in: cookie
+      required: true
+      schema:
+        type: string
+
+  headers:
+    SetSessionCookie:
+      description: Set session_id cookie
+      schema:
+        type: string
+
+    ClearSessionCookie:
+      description: Clear session_id cookie
+      schema:
+        type: string
+
+    SetPkceCookie:
+      description: Set pkce_verifier cookie
+      schema:
+        type: string
+
+  responses:
+    BadRequest:
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+
+    Forbidden:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+
+    NotFound:
+      description: Not found
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+
+    Conflict:
+      description: Conflict
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: session_id

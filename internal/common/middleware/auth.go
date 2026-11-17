@@ -2,11 +2,12 @@ package middleware
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
+	"log/slog"
 	"net/http"
 
 	"github.com/Forvi/MayWalk/internal/auth/session"
+	commonErrors "github.com/Forvi/MayWalk/internal/common/errors"
 )
 
 type sessionHandler interface {
@@ -20,18 +21,18 @@ type contextKey struct{}
 
 var userIDKey = contextKey{}
 
-func RequireAuth(sessHandler sessionHandler, secret string) func(http.Handler) http.Handler {
+func RequireAuth(sessHandler sessionHandler, secret string, logger *slog.Logger) func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			cookie, err := r.Cookie("session_id")
 			if err != nil {
-				sendUnauthorizedErr(w)
+				commonErrors.WriteError(w, commonErrors.NewDomainError("auth.unauthorized", "unauthorized", http.StatusUnauthorized), logger)
 				return
 			}
 
 			id, ok := session.VerifyID(cookie.Value, secret)
 			if !ok {
-				sendUnauthorizedErr(w)
+				commonErrors.WriteError(w, commonErrors.NewDomainError("auth.unauthorized", "unauthorized", http.StatusUnauthorized), logger)
 				return
 			}
 
@@ -40,21 +41,21 @@ func RequireAuth(sessHandler sessionHandler, secret string) func(http.Handler) h
 			sess, err := sessHandler.Get(r.Context(), sessionID)
 			if err != nil {
 				if errors.Is(err, session.ErrCacheNotFound) {
-					sendUnauthorizedErr(w)
+					commonErrors.WriteError(w, commonErrors.NewDomainError("auth.unauthorized", "unauthorized", http.StatusUnauthorized), logger)
 				} else {
-					sendUnexpectedErr(w)
+					commonErrors.WriteError(w, commonErrors.NewDomainError("auth.internal_error", "internal server error", http.StatusInternalServerError), logger)
 				}
 				return
 			}
 
 			if sess.IsExpired() {
 				_ = sessHandler.Delete(r.Context(), sessionID)
-				sendUnauthorizedErr(w)
+				commonErrors.WriteError(w, commonErrors.NewDomainError("auth.unauthorized", "unauthorized", http.StatusUnauthorized), logger)
 				return
 			}
 
 			if err := sessHandler.Refresh(r.Context(), sess); err != nil {
-				sendUnauthorizedErr(w)
+				commonErrors.WriteError(w, commonErrors.NewDomainError("auth.unauthorized", "unauthorized", http.StatusUnauthorized), logger)
 				return
 			}
 
@@ -62,20 +63,4 @@ func RequireAuth(sessHandler sessionHandler, secret string) func(http.Handler) h
 			next.ServeHTTP(w, r.WithContext(ctx))
 		})
 	}
-}
-
-func sendUnauthorizedErr(w http.ResponseWriter) {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusUnauthorized)
-	_ = json.NewEncoder(w).Encode(map[string]string{
-		"message": "unauthorized",
-	})
-}
-
-func sendUnexpectedErr(w http.ResponseWriter) {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusInternalServerError)
-	_ = json.NewEncoder(w).Encode(map[string]string{
-		"message": "internal_server_error",
-	})
 }

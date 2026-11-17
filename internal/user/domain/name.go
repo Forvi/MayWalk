@@ -1,10 +1,11 @@
 package domain
 
 import (
+	"net/http"
 	"strings"
 	"unicode"
 
-	"github.com/Forvi/MayWalk/internal/common/errs"
+	commonErrors "github.com/Forvi/MayWalk/internal/common/errors"
 )
 
 var (
@@ -17,16 +18,16 @@ type UserName string
 func NewUserName(raw string) (UserName, error) {
 	name := strings.TrimSpace(raw)
 	if name == "" {
-		return "", errs.New(errs.TypeValidation, ErrCodeNameInvalid, "name is empty")
+		return "", commonErrors.NewDomainError(ErrCodeNameInvalid, "name is empty", http.StatusBadRequest)
 	}
 
 	if strings.Contains(name, ":") {
-		return "", errs.New(errs.TypeValidation, ErrCodeNameInvalid, NameMessageInvalid)
+		return "", commonErrors.NewDomainError(ErrCodeNameInvalid, NameMessageInvalid, http.StatusBadRequest)
 	}
 
 	for _, r := range name {
 		if !unicode.IsLetter(r) && !unicode.IsDigit(r) && r != '_' && r != '-' {
-			return "", errs.New(errs.TypeValidation, ErrCodeNameInvalid, NameMessageInvalid)
+			return "", commonErrors.NewDomainError(ErrCodeNameInvalid, NameMessageInvalid, http.StatusBadRequest)
 		}
 	}
 

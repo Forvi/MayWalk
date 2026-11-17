@@ -3,10 +3,11 @@ package domain
 import (
 	"crypto/sha256"
 	"fmt"
+	"net/http"
 	"strings"
 	"unicode/utf8"
 
-	"github.com/Forvi/MayWalk/internal/common/errs"
+	commonErrors "github.com/Forvi/MayWalk/internal/common/errors"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -24,7 +25,7 @@ func NewUserPassword(raw *string) (UserPassword, error) {
 	}
 	trimmed := strings.TrimSpace(*raw)
 	if length := utf8.RuneCountInString(trimmed); length < MinPasswordLength {
-		return []byte{}, errs.New(errs.TypeValidation, ErrCodePasswordTooWeak, "password too weak")
+		return []byte{}, commonErrors.NewDomainError(ErrCodePasswordTooWeak, "password too weak", http.StatusBadRequest)
 	}
 
 	shaSum := sha256.Sum256([]byte(trimmed))

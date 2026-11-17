@@ -2,11 +2,12 @@ package domain
 
 import (
 	"fmt"
+	"net/http"
 	"net/mail"
 	"strings"
 	"unicode/utf8"
 
-	"github.com/Forvi/MayWalk/internal/common/errs"
+	commonErrors "github.com/Forvi/MayWalk/internal/common/errors"
 )
 
 // Constants
@@ -28,7 +29,7 @@ func NewUserEmail(raw string) (UserEmail, error) {
 	trimmed := strings.TrimSpace(raw)
 	length := utf8.RuneCountInString(trimmed)
 	if length < MinMailLength || length > MaxMailLength || !strings.Contains(trimmed, "@") {
-		return "", errs.New(errs.TypeValidation, ErrCodeEmailInvalid, EmailMessageInvalid)
+		return "", commonErrors.NewDomainError(ErrCodeEmailInvalid, EmailMessageInvalid, http.StatusBadRequest)
 	}
 
 	email, err := mail.ParseAddress(trimmed)
