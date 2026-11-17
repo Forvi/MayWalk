@@ -16,13 +16,13 @@ type Config struct {
 }
 
 func main() {
-	if err := godotenv.Load(); err != nil {
-		slog.Error("load env", "err", err)
-	}
+	// Загружаем .env вручную (если запускаем не через make)
+	_ = godotenv.Load()
 
 	cfg := &Config{}
 	if err := env.Parse(cfg); err != nil {
 		slog.Error("parse env", "err", err)
+		return
 	}
 
 	h, err := docs.Handler()

@@ -55,9 +55,6 @@ type PkceCookie = string
 // SessionCookieOptional defines model for SessionCookieOptional.
 type SessionCookieOptional = string
 
-// SessionCookieRequired defines model for SessionCookieRequired.
-type SessionCookieRequired = string
-
 // UserId defines model for UserId.
 type UserId = string
 
@@ -94,12 +91,12 @@ type GetUserSigninYandexCallbackParams struct {
 
 // GetUserIdParams defines parameters for GetUserId.
 type GetUserIdParams struct {
-	SessionId SessionCookieRequired `form:"session_id" json:"session_id"`
+	SessionId *SessionCookieOptional `form:"session_id,omitempty" json:"session_id,omitempty"`
 }
 
 // PatchUserIdInactiveParams defines parameters for PatchUserIdInactive.
 type PatchUserIdInactiveParams struct {
-	SessionId SessionCookieRequired `form:"session_id" json:"session_id"`
+	SessionId *SessionCookieOptional `form:"session_id,omitempty" json:"session_id,omitempty"`
 }
 
 // PostUserLoginJSONRequestBody defines body for PostUserLogin for application/json ContentType.
@@ -110,25 +107,25 @@ type PostUserRegisterJSONRequestBody = RegisterUserRequest
 
 // ServerInterface represents all server handlers.
 type ServerInterface interface {
-	// PostUserLogin Login user or refresh existing session
+	// PostUserLogin Авторизует или обновляет существующую сессию пользователя; как логин принимается username и почта
 	// (POST /user/login)
 	PostUserLogin(w http.ResponseWriter, r *http.Request, params PostUserLoginParams)
-	// PostUserLogout Logout user and clear session
+	// PostUserLogout Позволяет пользователю выйти из аккаунта и удаляет сессию
 	// (POST /user/logout)
 	PostUserLogout(w http.ResponseWriter, r *http.Request, params PostUserLogoutParams)
-	// PostUserRegister Register a new user
+	// PostUserRegister Регистрирует нового пользователя
 	// (POST /user/register)
 	PostUserRegister(w http.ResponseWriter, r *http.Request)
-	// GetUserSigninYandex Start Yandex OAuth flow
+	// GetUserSigninYandex Позволяет авторизоваться через YandexID; формирует ссылку авторизации редиректит на неё
 	// (GET /user/signin/yandex)
 	GetUserSigninYandex(w http.ResponseWriter, r *http.Request)
-	// GetUserSigninYandexCallback Yandex OAuth callback
+	// GetUserSigninYandexCallback Callback-ссылка редиректа для авторизации YandexID; технический endpoint
 	// (GET /user/signin/yandex/callback)
 	GetUserSigninYandexCallback(w http.ResponseWriter, r *http.Request, params GetUserSigninYandexCallbackParams)
-	// GetUserId Get user by ID
+	// GetUserId Находит и возвращает пользователя по его ID
 	// (GET /user/{id})
 	GetUserId(w http.ResponseWriter, r *http.Request, id UserId, params GetUserIdParams)
-	// PatchUserIdInactive Deactivate user account
+	// PatchUserIdInactive Деактивация/мягкое удаление пользователя
 	// (PATCH /user/{id}/inactive)
 	PatchUserIdInactive(w http.ResponseWriter, r *http.Request, id UserId, params PatchUserIdInactiveParams)
 }
@@ -313,17 +310,14 @@ func (siw *ServerInterfaceWrapper) GetUserId(w http.ResponseWriter, r *http.Requ
 		var cookie *http.Cookie
 
 		if cookie, err = r.Cookie("session_id"); err == nil {
-			var value SessionCookieRequired
-			err = runtime.BindStyledParameterWithOptions("simple", "session_id", cookie.Value, &value, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationCookie, Explode: true, Required: true, Type: "string", Format: ""})
+			var value SessionCookieOptional
+			err = runtime.BindStyledParameterWithOptions("simple", "session_id", cookie.Value, &value, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationCookie, Explode: true, Required: false, Type: "string", Format: ""})
 			if err != nil {
 				siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "session_id", Err: err})
 				return
 			}
-			params.SessionId = value
+			params.SessionId = &value
 
-		} else {
-			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "session_id"})
-			return
 		}
 	}
 
@@ -360,17 +354,14 @@ func (siw *ServerInterfaceWrapper) PatchUserIdInactive(w http.ResponseWriter, r 
 		var cookie *http.Cookie
 
 		if cookie, err = r.Cookie("session_id"); err == nil {
-			var value SessionCookieRequired
-			err = runtime.BindStyledParameterWithOptions("simple", "session_id", cookie.Value, &value, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationCookie, Explode: true, Required: true, Type: "string", Format: ""})
+			var value SessionCookieOptional
+			err = runtime.BindStyledParameterWithOptions("simple", "session_id", cookie.Value, &value, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationCookie, Explode: true, Required: false, Type: "string", Format: ""})
 			if err != nil {
 				siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "session_id", Err: err})
 				return
 			}
-			params.SessionId = value
+			params.SessionId = &value
 
-		} else {
-			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "session_id"})
-			return
 		}
 	}
 
@@ -844,25 +835,25 @@ func (response PatchUserIdInactive404JSONResponse) VisitPatchUserIdInactiveRespo
 
 // StrictServerInterface represents all server handlers.
 type StrictServerInterface interface {
-	// PostUserLogin Login user or refresh existing session
+	// PostUserLogin Авторизует или обновляет существующую сессию пользователя; как логин принимается username и почта
 	// (POST /user/login)
 	PostUserLogin(ctx context.Context, request PostUserLoginRequestObject) (PostUserLoginResponseObject, error)
-	// PostUserLogout Logout user and clear session
+	// PostUserLogout Позволяет пользователю выйти из аккаунта и удаляет сессию
 	// (POST /user/logout)
 	PostUserLogout(ctx context.Context, request PostUserLogoutRequestObject) (PostUserLogoutResponseObject, error)
-	// PostUserRegister Register a new user
+	// PostUserRegister Регистрирует нового пользователя
 	// (POST /user/register)
 	PostUserRegister(ctx context.Context, request PostUserRegisterRequestObject) (PostUserRegisterResponseObject, error)
-	// GetUserSigninYandex Start Yandex OAuth flow
+	// GetUserSigninYandex Позволяет авторизоваться через YandexID; формирует ссылку авторизации редиректит на неё
 	// (GET /user/signin/yandex)
 	GetUserSigninYandex(ctx context.Context, request GetUserSigninYandexRequestObject) (GetUserSigninYandexResponseObject, error)
-	// GetUserSigninYandexCallback Yandex OAuth callback
+	// GetUserSigninYandexCallback Callback-ссылка редиректа для авторизации YandexID; технический endpoint
 	// (GET /user/signin/yandex/callback)
 	GetUserSigninYandexCallback(ctx context.Context, request GetUserSigninYandexCallbackRequestObject) (GetUserSigninYandexCallbackResponseObject, error)
-	// GetUserId Get user by ID
+	// GetUserId Находит и возвращает пользователя по его ID
 	// (GET /user/{id})
 	GetUserId(ctx context.Context, request GetUserIdRequestObject) (GetUserIdResponseObject, error)
-	// PatchUserIdInactive Deactivate user account
+	// PatchUserIdInactive Деактивация/мягкое удаление пользователя
 	// (PATCH /user/{id}/inactive)
 	PatchUserIdInactive(ctx context.Context, request PatchUserIdInactiveRequestObject) (PatchUserIdInactiveResponseObject, error)
 }

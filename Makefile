@@ -17,11 +17,12 @@ endif
 
 BUILD_DIR=build
 GO_MAIN=./cmd/server/main.go
+GO_DOCS=./cmd/docs/main.go
 LDFLAGS=-ldflags "-X main.BuildTime=$(GET_DATE)"
 GO_BUILD=go build $(LDFLAGS) -o $(BUILD_DIR)/$(TARGET) $(GO_MAIN)
 GO_TEST=-v -race ./...
 
-.PHONY: all build run clean test migrate migrate-down help
+.PHONY: all build run clean docs test generate migrate migrate-down help
 
 # =================================
 # |          make help            |
@@ -51,9 +52,15 @@ clean: ## Удаление скомпилированных файлов и оч
 	@$(RM) $(BUILD_DIR)
 	@go clean
 
+docs: ## Запускает Swagger-UI
+	-go run $(GO_DOCS)
+
 test: ## Запуск тестов
 	@echo "Запуск тестов..."
 	go test $(GO_TEST)
+
+generate: ## Генерация типов
+	go generate ./internal/api/
 
 migrate: ## Применение миграции
 	migrate -path $(DB_MIGRATION_PATH) -database $(DB_URL) up
