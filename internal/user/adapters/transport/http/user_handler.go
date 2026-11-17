@@ -1,32 +1,16 @@
 package http
 
 import (
-	"encoding/json"
+	"context"
 	"log/slog"
 	"net/http"
-	"strings"
 
+	"github.com/Forvi/MayWalk/internal/api"
 	"github.com/Forvi/MayWalk/internal/auth/session"
-	"github.com/Forvi/MayWalk/internal/common/errs"
 	"github.com/Forvi/MayWalk/internal/user/app"
 	"github.com/Forvi/MayWalk/internal/user/domain"
 	"github.com/Forvi/MayWalk/internal/user/dto"
 )
-
-type Middleware func(http.Handler) http.Handler
-
-func Routes(mux *http.ServeMux, h *UserHandler, auth Middleware) {
-	// auth not required
-	mux.HandleFunc("POST /user/register", h.RegisterUser)
-	mux.HandleFunc("POST /user/login", h.LoginUser)
-	mux.HandleFunc("POST /user/logout", h.LogoutUser)
-	mux.HandleFunc("GET /user/signin/yandex", h.UserYaSignIn)
-	mux.HandleFunc("GET /user/signin/yandex/callback", h.UserYaSignInCallback)
-
-	// auth required
-	mux.Handle("PATCH /user/{id}/inactive", auth(http.HandlerFunc(h.InactiveUser)))
-	mux.Handle("GET /user/{id}", auth(http.HandlerFunc(h.FindUser)))
-}
 
 type UserHandler struct {
 	logger          *slog.Logger
@@ -44,7 +28,7 @@ func NewUserHandler(
 	logger *slog.Logger,
 	sessCfg *session.SessConfig,
 	registerUsecase *app.RegisterUserUsecase,
-	inacticeUsecase *app.InactiveUserUsecase,
+	inactiveUsecase *app.InactiveUserUsecase,
 	findUsecase *app.FindUserUsecase,
 	loginUsecase *app.LoginUserUsecase,
 	logoutUsecase *app.LogoutUserUsecase,
@@ -55,7 +39,7 @@ func NewUserHandler(
 		logger:          logger,
 		sessCfg:         sessCfg,
 		registerUsecase: registerUsecase,
-		inactiveUsecase: inacticeUsecase,
+		inactiveUsecase: inactiveUsecase,
 		findUsecase:     findUsecase,
 		loginUsecase:    loginUsecase,
 		logoutUsecase:   logoutUsecase,
@@ -64,130 +48,102 @@ func NewUserHandler(
 	}
 }
 
-type UserReq struct {
-	Name     string `json:"name"`
-	Email    string `json:"email"`
-	Password string `json:"password"`
-}
+// PostUserRegister implements api.StrictServerInterface
+func (h *UserHandler) PostUserRegister(
+	ctx context.Context,
+	req api.PostUserRegisterRequestObject,
+) (api.PostUserRegisterResponseObject, error) {
+	if req.Body == nil {
+		return api.PostUserRegister400JSONResponse{
+			Code:    "http.bad_request",
+			Message: "Request body is required",
+		}, nil
+	}
 
-type LoginUserReq struct {
-	Login      string `json:"login"`
-	Password   string `json:"password"`
-	RememberMe bool   `json:"remember_me"`
-}
+	input := domain.UserInput{
+		Name:     req.Body.Name,
+		Email:    string(req.Body.Email),
+		Password: &req.Body.Password,
+	}
 
-func (h *UserHandler) UserYaSignInCallback(w http.ResponseWriter, r *http.Request) {
-	rememberMe := true
-	cookie, err := r.Cookie("pkce_verifier")
+	data, err := h.registerUsecase.Execute(ctx, input)
 	if err != nil {
-		h.sendError(w, err)
-		return
-	}
-	http.SetCookie(w, &http.Cookie{
-		Name:     "pkce_verifier",
-		Value:    "",
-		Path:     "/",
-		HttpOnly: true,
-		Secure:   true,
-		SameSite: http.SameSiteLaxMode,
-		MaxAge:   -1,
-	})
-
-	params := r.URL.Query()
-	var code string
-	if codes, exists := params["code"]; !exists || strings.TrimSpace(codes[0]) == "" {
-		h.sendError(w, domain.ErrInvalidCredentials)
-		return
-	} else {
-		code = codes[0]
+		return nil, err
 	}
 
-	cookieVal, err := h.yaSignInUsecase.Auth(r.Context(), code, cookie.Value, rememberMe)
-	if err != nil {
-		h.sendError(w, err)
-		return
-	}
-
-	maxAge := 0
-	if rememberMe {
-		maxAge = int(h.sessCfg.RememberTimeout.Seconds())
-	}
-	http.SetCookie(w, &http.Cookie{
-		Name:     "session_id",
-		Value:    cookieVal,
-		Path:     "/",
-		HttpOnly: true,
-		Secure:   true,
-		SameSite: http.SameSiteLaxMode,
-		MaxAge:   maxAge,
-	})
-
-	h.respond(w, http.StatusOK, nil)
+	return api.PostUserRegister201JSONResponse{
+		Id:        data.ID,
+		Name:      data.Name,
+		Email:     data.Email,
+		IsActive:  data.IsActive,
+		CreatedAt: data.CreatedAt,
+		UpdatedAt: data.UpdatedAt,
+	}, nil
 }
 
-func (h *UserHandler) UserYaSignIn(w http.ResponseWriter, r *http.Request) {
-	url, verifier := h.yaSignInUsecase.SignIn(r.Context())
-	http.SetCookie(w, &http.Cookie{
-		Name:     "pkce_verifier",
-		Value:    verifier,
-		Path:     "/",
-		HttpOnly: true,
-		Secure:   true,
-		SameSite: http.SameSiteLaxMode,
-		MaxAge:   600,
-	})
-	http.Redirect(w, r, url, http.StatusFound)
-}
-
-func (h *UserHandler) LoginUser(w http.ResponseWriter, r *http.Request) {
-	cookie, err := r.Cookie("session_id")
-	if err == nil {
-		sess, err := h.refreshUsecase.Execute(r.Context(), cookie.Value)
+// PostUserLogin implements api.StrictServerInterface
+func (h *UserHandler) PostUserLogin(
+	ctx context.Context,
+	req api.PostUserLoginRequestObject,
+) (api.PostUserLoginResponseObject, error) {
+	// refresh existing session
+	if req.Params.SessionId != nil && *req.Params.SessionId != "" {
+		sess, err := h.refreshUsecase.Execute(ctx, *req.Params.SessionId)
 		if err == nil {
 			maxAge := 0
 			if sess.RememberMe {
 				maxAge = int(h.sessCfg.RememberTimeout.Seconds())
 			}
 
-			http.SetCookie(w, &http.Cookie{
+			cookie := &http.Cookie{
 				Name:     "session_id",
-				Value:    cookie.Value,
+				Value:    *req.Params.SessionId,
 				Path:     "/",
 				HttpOnly: true,
 				Secure:   true,
 				SameSite: http.SameSiteLaxMode,
 				MaxAge:   maxAge,
-			})
+			}
+			cookieStr := cookie.String()
 
-			h.respond(w, http.StatusNoContent, nil)
-			return
+			return api.PostUserLogin204Response{
+				Headers: api.PostUserLogin204ResponseHeaders{
+					SetCookie: &cookieStr,
+				},
+			}, nil
 		}
 	}
 
-	var req LoginUserReq
-	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-		h.sendError(w, errs.New(errs.TypeValidation, "http.bad_request", "Invalid JSON format"))
-		return
+	// login
+	if req.Body == nil {
+		return api.PostUserLogin400JSONResponse{
+			Code:    "http.bad_request",
+			Message: "Request body is required",
+		}, nil
+	}
+
+	rememberMe := false
+	if req.Body.RememberMe != nil {
+		rememberMe = *req.Body.RememberMe
 	}
 
 	login := dto.UserLogin{
-		Login:      req.Login,
-		Password:   &req.Password,
-		RememberMe: req.RememberMe,
+		Login:      req.Body.Login,
+		Password:   &req.Body.Password,
+		RememberMe: rememberMe,
 	}
 
-	id, err := h.loginUsecase.Execute(r.Context(), login, h.sessCfg.Secret)
+	id, err := h.loginUsecase.Execute(ctx, login, h.sessCfg.Secret)
 	if err != nil {
-		h.sendError(w, err)
-		return
+		return nil, err
 	}
 
 	maxAge := 0
-	if req.RememberMe {
+	if rememberMe {
 		maxAge = int(h.sessCfg.RememberTimeout.Seconds())
 	}
 
-	http.SetCookie(w, &http.Cookie{
+	cookie := &http.Cookie{
 		Name:     "session_id",
 		Value:    id,
 		Path:     "/",
@@ -195,97 +151,195 @@ func (h *UserHandler) LoginUser(w http.ResponseWriter, r *http.Request) {
 		Secure:   true,
 		SameSite: http.SameSiteLaxMode,
 		MaxAge:   maxAge,
-	})
+	}
+	cookieStr := cookie.String()
 
-	h.respond(w, http.StatusNoContent, nil)
+	return api.PostUserLogin204Response{
+		Headers: api.PostUserLogin204ResponseHeaders{
+			SetCookie: &cookieStr,
+		},
+	}, nil
 }
 
-func (h *UserHandler) LogoutUser(w http.ResponseWriter, r *http.Request) {
-	cookie, err := r.Cookie("session_id")
-	if err != nil {
-		h.respond(w, http.StatusNoContent, nil)
-		return
+// PostUserLogout implements api.StrictServerInterface
+func (h *UserHandler) PostUserLogout(
+	ctx context.Context,
+	req api.PostUserLogoutRequestObject,
+) (api.PostUserLogoutResponseObject, error) {
+	if req.Params.SessionId == nil || *req.Params.SessionId == "" {
+		cookie := &http.Cookie{
+			Name:     "session_id",
+			Value:    "",
+			Path:     "/",
+			HttpOnly: true,
+			Secure:   true,
+			SameSite: http.SameSiteLaxMode,
+			MaxAge:   -1,
+		}
+		cookieStr := cookie.String()
+		return api.PostUserLogout204Response{
+			Headers: api.PostUserLogout204ResponseHeaders{
+				SetCookie: &cookieStr,
+			},
+		}, nil
 	}
 
-	id, ok := session.VerifyID(cookie.Value, h.sessCfg.Secret)
+	id, ok := session.VerifyID(*req.Params.SessionId, h.sessCfg.Secret)
 	if !ok {
-		h.respond(w, http.StatusNoContent, nil)
-		return
+		cookie := &http.Cookie{
+			Name:     "session_id",
+			Value:    "",
+			Path:     "/",
+			HttpOnly: true,
+			Secure:   true,
+			SameSite: http.SameSiteLaxMode,
+			MaxAge:   -1,
+		}
+		cookieStr := cookie.String()
+		return api.PostUserLogout204Response{
+			Headers: api.PostUserLogout204ResponseHeaders{
+				SetCookie: &cookieStr,
+			},
+		}, nil
 	}
 
 	sessionID := session.SessionID(id)
-	if err := h.logoutUsecase.Execute(r.Context(), sessionID); err != nil {
-		h.sendError(w, err)
-		return
+	if err := h.logoutUsecase.Execute(ctx, sessionID); err != nil {
+		return nil, err
 	}
 
-	http.SetCookie(w, &http.Cookie{
+	cookie := &http.Cookie{
 		Name:     "session_id",
 		Value:    "",
 		Path:     "/",
 		HttpOnly: true,
 		Secure:   true,
 		SameSite: http.SameSiteLaxMode,
-		MaxAge:   -1, // remove cookie
-	})
+		MaxAge:   -1,
+	}
+	cookieStr := cookie.String()
 
-	h.respond(w, http.StatusNoContent, nil)
+	return api.PostUserLogout204Response{
+		Headers: api.PostUserLogout204ResponseHeaders{
+			SetCookie: &cookieStr,
+		},
+	}, nil
 }
 
-func (h *UserHandler) RegisterUser(w http.ResponseWriter, r *http.Request) {
-	var req UserReq
-	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-		h.sendError(w, errs.New(errs.TypeValidation, "http.bad_request", "Invalid JSON format"))
-		return
+// GetUserSigninYandex implements api.StrictServerInterface
+func (h *UserHandler) GetUserSigninYandex(
+	ctx context.Context,
+	req api.GetUserSigninYandexRequestObject,
+) (api.GetUserSigninYandexResponseObject, error) {
+	url, verifier := h.yaSignInUsecase.SignIn(ctx)
+
+	cookie := &http.Cookie{
+		Name:     "pkce_verifier",
+		Value:    verifier,
+		Path:     "/",
+		HttpOnly: true,
+		Secure:   true,
+		SameSite: http.SameSiteLaxMode,
+		MaxAge:   600,
+	}
+	cookieStr := cookie.String()
+
+	return api.GetUserSigninYandex302Response{
+		Headers: api.GetUserSigninYandex302ResponseHeaders{
+			Location:  &url,
+			SetCookie: &cookieStr,
+		},
+	}, nil
+}
+
+// YandexCallbackResponse type for update cookies when oauth callback
+type YandexCallbackResponse struct {
+	sessionCookie *http.Cookie
+	clearCookie   *http.Cookie
+}
+
+// VisitGetUserSigninYandexCallbackResponse implement GetUserSigninYandexCallbackResponseObject for SetCookie
+func (r YandexCallbackResponse) VisitGetUserSigninYandexCallbackResponse(w http.ResponseWriter) error {
+	http.SetCookie(w, r.clearCookie)
+	http.SetCookie(w, r.sessionCookie)
+	w.WriteHeader(200)
+	return nil
+}
+
+// GetUserSigninYandexCallback implements api.StrictServerInterface
+func (h *UserHandler) GetUserSigninYandexCallback(
+	ctx context.Context,
+	req api.GetUserSigninYandexCallbackRequestObject,
+) (api.GetUserSigninYandexCallbackResponseObject, error) {
+	rememberMe := true
+
+	clearCookie := &http.Cookie{
+		Name:     "pkce_verifier",
+		Value:    "",
+		Path:     "/",
+		HttpOnly: true,
+		Secure:   true,
+		SameSite: http.SameSiteLaxMode,
+		MaxAge:   -1, // clear cookie
 	}
 
-	input := domain.UserInput{
-		Name:     req.Name,
-		Email:    req.Email,
-		Password: &req.Password,
-	}
+	code := req.Params.Code
+	pkceVerifier := req.Params.PkceVerifier
 
-	data, err := h.registerUsecase.Execute(r.Context(), input)
+	cookieVal, err := h.yaSignInUsecase.Auth(ctx, code, pkceVerifier, rememberMe)
 	if err != nil {
-		h.sendError(w, err)
-		return
+		return nil, err
 	}
 
-	h.respond(w, http.StatusCreated, data)
-}
-
-func (h *UserHandler) InactiveUser(w http.ResponseWriter, r *http.Request) {
-	id := r.PathValue("id")
-	if err := h.inactiveUsecase.Execute(r.Context(), id); err != nil {
-		h.sendError(w, err)
-		return
+	maxAge := 0
+	if rememberMe {
+		maxAge = int(h.sessCfg.RememberTimeout.Seconds())
 	}
-	h.respond(w, http.StatusNoContent, nil)
+
+	sessionCookie := &http.Cookie{
+		Name:     "session_id",
+		Value:    cookieVal,
+		Path:     "/",
+		HttpOnly: true,
+		Secure:   true,
+		SameSite: http.SameSiteLaxMode,
+		MaxAge:   maxAge,
+	}
+
+	return &YandexCallbackResponse{
+		sessionCookie: sessionCookie,
+		clearCookie:   clearCookie,
+	}, nil
 }
 
-func (h *UserHandler) FindUser(w http.ResponseWriter, r *http.Request) {
-	id := r.PathValue("id")
-	data, err := h.findUsecase.Execute(r.Context(), id)
+// GetUserId implements api.StrictServerInterface
+func (h *UserHandler) GetUserId(
+	ctx context.Context,
+	req api.GetUserIdRequestObject,
+) (api.GetUserIdResponseObject, error) {
+	data, err := h.findUsecase.Execute(ctx, req.Id)
 	if err != nil {
-		h.sendError(w, err)
-		return
+		return nil, err
 	}
-	h.respond(w, http.StatusOK, data)
+
+	return api.GetUserId200JSONResponse{
+		Id:        data.ID,
+		Name:      data.Name,
+		Email:     data.Email,
+		IsActive:  data.IsActive,
+		CreatedAt: data.CreatedAt,
+		UpdatedAt: data.UpdatedAt,
+	}, nil
 }
 
-func (h *UserHandler) respond(w http.ResponseWriter, status int, data any) {
-	if data == nil {
-		w.WriteHeader(status)
-		return
+// PatchUserIdInactive implements api.StrictServerInterface
+func (h *UserHandler) PatchUserIdInactive(
+	ctx context.Context,
+	req api.PatchUserIdInactiveRequestObject,
+) (api.PatchUserIdInactiveResponseObject, error) {
+	if err := h.inactiveUsecase.Execute(ctx, req.Id); err != nil {
+		return nil, err
 	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(status)
-	_ = json.NewEncoder(w).Encode(data)
-}
 
-func (h *UserHandler) sendError(w http.ResponseWriter, err error) {
-	statusCode, errorJSON := mapError(err, h.logger)
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(statusCode)
-	_ = json.NewEncoder(w).Encode(errorJSON)
+	return api.PatchUserIdInactive204Response{}, nil
 }

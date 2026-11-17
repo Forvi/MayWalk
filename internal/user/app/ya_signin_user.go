@@ -6,12 +6,13 @@ import (
 	"errors"
 	"fmt"
 	"math/big"
+	"net/http"
 	"strings"
 	"unicode"
 
 	"github.com/Forvi/MayWalk/internal/auth/oauth"
 	"github.com/Forvi/MayWalk/internal/auth/session"
-	"github.com/Forvi/MayWalk/internal/common/errs"
+	commonErrors "github.com/Forvi/MayWalk/internal/common/errors"
 	"github.com/Forvi/MayWalk/internal/user/adapters/repository/models"
 	"github.com/Forvi/MayWalk/internal/user/domain"
 	"github.com/Forvi/MayWalk/internal/user/dto"
@@ -152,8 +153,8 @@ func (uc *YaSignInUserUsecase) handleExistingUserByEmail(user *domain.User) (str
 	}
 
 	if user.Password != nil {
-		return "", errs.New(errs.TypeConflict, "auth.email_already_registered",
-			"email is already registered with password.")
+		return "", commonErrors.NewDomainError("auth.email_already_registered",
+			"email is already registered with password.", http.StatusConflict)
 	}
 
 	return user.ID.String(), nil

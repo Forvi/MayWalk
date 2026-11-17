@@ -4,10 +4,11 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"net/http"
 	"strings"
 	"time"
 
-	"github.com/Forvi/MayWalk/internal/common/errs"
+	commonErrors "github.com/Forvi/MayWalk/internal/common/errors"
 	"github.com/Forvi/MayWalk/internal/user/adapters/repository/models"
 	"github.com/Forvi/MayWalk/internal/user/domain"
 	"github.com/jackc/pgx/v5"
@@ -15,7 +16,7 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
-var ErrEmptyUpdates = errs.New(errs.TypeInternal, "empty_updates", "no updates fields")
+var ErrEmptyUpdates = commonErrors.NewDomainError("internal.empty_updates", "no updates fields", http.StatusInternalServerError)
 
 type querier interface {
 	Exec(ctx context.Context, sql string, arguments ...any) (pgconn.CommandTag, error)

@@ -12,19 +12,21 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/Forvi/MayWalk/internal/api"
 	"github.com/Forvi/MayWalk/internal/auth/oauth"
 	"github.com/Forvi/MayWalk/internal/auth/session"
 	"github.com/Forvi/MayWalk/internal/common/cache"
 	"github.com/Forvi/MayWalk/internal/common/config"
 	"github.com/Forvi/MayWalk/internal/common/database"
+	commonErrors "github.com/Forvi/MayWalk/internal/common/errors"
 	"github.com/Forvi/MayWalk/internal/common/log"
-	"github.com/Forvi/MayWalk/internal/common/middleware"
 	"github.com/Forvi/MayWalk/internal/health"
 	userRepoPsql "github.com/Forvi/MayWalk/internal/user/adapters/repository/postgres"
 	userHttp "github.com/Forvi/MayWalk/internal/user/adapters/transport/http"
 	userUsecases "github.com/Forvi/MayWalk/internal/user/app"
 
 	_ "github.com/golang-migrate/migrate/v4/database/pgx/v5"
+	"github.com/rs/cors"
 )
 
 type App struct {
@@ -47,11 +49,21 @@ func InitApp() (*App, error) {
 		os.Exit(1)
 	}
 
+	c := cors.New(cors.Options{
+		AllowedOrigins:   []string{"http://localhost:8081"},
+		AllowedMethods:   []string{"GET", "POST", "PATCH", "DELETE", "OPTIONS"},
+		AllowedHeaders:   []string{"Content-Type", "Accept", "Authorization"},
+		AllowCredentials: true,
+	})
+	handler := c.Handler(mux)
+
 	server := &http.Server{
-		Addr:         config.Port,
-		Handler:      mux,
-		ReadTimeout:  10 * time.Second,
-		WriteTimeout: 10 * time.Second,
+		Addr:              config.Port,
+		Handler:           handler,
+		ReadHeaderTimeout: 5 * time.Second,
+		IdleTimeout:       60 * time.Second,
+		ReadTimeout:       10 * time.Second,
+		WriteTimeout:      10 * time.Second,
 	}
 
 	return &App{
@@ -100,7 +112,6 @@ func buildApp(mux *http.ServeMux, logger *slog.Logger) error {
 	}
 
 	sessions := session.NewSessionCache(cache.Redis, &cfg.SessionConfig)
-	auth := middleware.RequireAuth(sessions, cfg.SessionConfig.Secret)
 
 	healthHandler := health.NewHealthHandler()
 	mux.HandleFunc("/health", healthHandler.Health)
@@ -134,7 +145,20 @@ func buildApp(mux *http.ServeMux, logger *slog.Logger) error {
 		userRefreshUsecase,
 		yaSignInUsecase,
 	)
-	userHttp.Routes(mux, userHandler, auth)
+	server := NewServer(userHandler)
+	strictHandler := api.NewStrictHandlerWithOptions(server, nil, api.StrictHTTPServerOptions{
+		ResponseErrorHandlerFunc: func(w http.ResponseWriter, r *http.Request, err error) {
+			commonErrors.WriteError(w, err, logger)
+		},
+	})
+
+	handler := api.HandlerFromMux(strictHandler, http.NewServeMux())
+
+	RegisterRoutes(mux, handler, &RouteConfig{
+		sessions:   sessions,
+		sessionCfg: &cfg.SessionConfig,
+		logger:     logger,
+	})
 
 	return nil
 }

@@ -1,10 +1,12 @@
 package domain
 
-import "github.com/Forvi/MayWalk/internal/common/errs"
+import "github.com/Forvi/MayWalk/internal/common/errors"
+
+import "net/http"
 
 var (
-	ErrAlreadyExists      = errs.New(errs.TypeConflict, "user.conflict", "user with this name or email already exists")
-	ErrNotFound           = errs.New(errs.TypeNotFound, "user.not_found", "user not found")
-	ErrInvalidCredentials = errs.New(errs.TypeValidation, "auth.invalid_credentials", "invalid credentials")
-	ErrAccountInactive    = errs.New(errs.TypeValidation, "auth.account_inactive", "account is inactive")
+	ErrAlreadyExists      = errors.NewDomainError("user.conflict", "user with this name or email already exists", http.StatusConflict)
+	ErrNotFound           = errors.NewDomainError("user.not_found", "user not found", http.StatusNotFound)
+	ErrInvalidCredentials = errors.NewDomainError("auth.invalid_credentials", "invalid credentials", http.StatusBadRequest)
+	ErrAccountInactive    = errors.NewDomainError("auth.account_inactive", "account is inactive", http.StatusForbidden)
 )
