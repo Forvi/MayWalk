@@ -8,20 +8,22 @@ ifeq ($(OS),Windows_NT)
     RM := if exist $(BUILD_DIR) rmdir /s /q
     MKDIR := if not exist $(BUILD_DIR) mkdir
     TARGET := app.exe
+	COPY := xcopy
 else
     GET_DATE := $(shell date -u +%Y-%m-%dT%H:%M:%SZ)
     RM := rm -rf
     MKDIR := mkdir -p
     TARGET := app
+	COPY := cp
 endif
 
-BUILD_DIR=build
+BACKEND_DIR=backend
+BUILD_DIR=$(BACKEND_DIR)/build
 GO_MAIN=./cmd/server/main.go
+GO_DOCS=./cmd/docs/main.go
 LDFLAGS=-ldflags "-X main.BuildTime=$(GET_DATE)"
-GO_BUILD=go build $(LDFLAGS) -o $(BUILD_DIR)/$(TARGET) $(GO_MAIN)
-GO_TEST=-v -race ./...
 
-.PHONY: all build run clean test migrate migrate-down help
+.PHONY: all back-build back-run back-clean docs back-test back-generate back-migrate back-migrate-down help
 
 # =================================
 # |          make help            |
@@ -31,32 +33,39 @@ GO_TEST=-v -race ./...
 # ===========
 # | Команды |
 # ===========
-all: clean build ## Очистка и сборка проекта
+all: back-clean back-build ## Очистка и сборка проекта
 
 help: ## Вывод списка команд
 	@echo "Доступные команды:"
 	@grep -hE '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-15s\033[0m %s\n", $$1, $$2}'
 
-run: ## Запуск приложения без сборки
-	-go run $(GO_MAIN)
+back-run: ## Запуск приложения без сборки
+	cd $(BACKEND_DIR) && go run $(GO_MAIN)
 
-build: ## Сборка проекта
+back-build: ## Сборка проекта
 	@echo "[$(GET_DATE)] Сборка..."
 	@$(MKDIR) $(BUILD_DIR)
-	$(GO_BUILD)
+	cd $(BACKEND_DIR) && go build $(LDFLAGS) -o build/$(TARGET) $(GO_MAIN)
 	@echo "Сборка завершена: $(BUILD_DIR)/$(TARGET)"
 
-clean: ## Удаление скомпилированных файлов и очистка кэша
+back-clean: ## Удаление скомпилированных файлов и очистка кэша
 	@echo "Очистка..."
 	@$(RM) $(BUILD_DIR)
-	@go clean
+	cd $(BACKEND_DIR) && go clean
 
-test: ## Запуск тестов
+docs: ## Запускает Swagger-UI
+	cd $(BACKEND_DIR) && go run $(GO_DOCS)
+
+back-test: ## Запуск тестов
 	@echo "Запуск тестов..."
-	go test $(GO_TEST)
+	cd $(BACKEND_DIR) && go test -v -race ./...
 
-migrate: ## Применение миграции
-	migrate -path $(DB_MIGRATION_PATH) -database $(DB_URL) up
+back-generate: ## Генерация типов
+	$(COPY) api/openapi.yml $(BACKEND_DIR)/docs
+	cd $(BACKEND_DIR) && oapi-codegen -config oapi-codegen.yml docs/openapi.yml
 
-migrate-down: ## Откат миграции
-	migrate -path $(DB_MIGRATION_PATH) -database $(DB_URL) down
+back-migrate: ## Применение миграции
+	cd $(BACKEND_DIR) && migrate -path ./migrations -database $(DB_URL) up
+
+back-migrate-down: ## Откат миграции
+	cd $(BACKEND_DIR) && migrate -path ./migrations -database $(DB_URL) down
