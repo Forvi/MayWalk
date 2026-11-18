@@ -1,9 +1,44 @@
 services:
+# === application ===
+
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    profiles: ["dev", "prod"]
+    container_name: maywalk-backend
+    restart: unless-stopped
+    ports:
+      - "${PORT:-8080}:8080"
+    env_file: [.env]
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - maywalk_network
+
+  swagger:
+      build:
+        context: .
+        dockerfile: backend/Dockerfile
+      profiles: ["docs", "dev"]
+      container_name: maywalk-swagger
+      restart: unless-stopped
+      ports:
+        - "${SWAGGER_PORT:-8081}:8081"
+      environment:
+        - SWAGGER_PORT=:8081
+      command: ["./swagger"]
+      networks:
+        - maywalk_network
+
 # === infrastructure ===
 
   postgres:
     image: postgres:17-alpine
-    profiles: ["dev", "prod"]
+    profiles: ["infra", "dev", "prod"]
     container_name: maywalk-db
     restart: unless-stopped
     ports:
@@ -15,7 +50,7 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD", "pg_isready", "-U", "postgres"]
+      test: ["CMD", "pg_isready", "-U", "${DB_USER}"]
       interval: 5s
       timeout: 5s
       retries: 5
@@ -26,7 +61,7 @@ services:
 
   redis:
     image: redis:7.4-alpine
-    profiles: ["dev", "prod"]
+    profiles: ["infra", "dev", "prod"]
     container_name: maywalk_cache
     restart: always
     ports:
@@ -60,7 +95,7 @@ services:
 
   redisinsight:
     image: redislabs/redisinsight:latest
-    profiles: ["dev", "prod"]
+    profiles: ["infra", "dev", "prod"]
     container_name: redis-insight
     restart: unless-stopped
     ports:

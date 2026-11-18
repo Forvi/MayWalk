@@ -50,7 +50,7 @@ func InitApp() (*App, error) {
 	}
 
 	c := cors.New(cors.Options{
-		AllowedOrigins:   []string{"http://localhost:8081"},
+		AllowedOrigins:   []string{"http://localhost:8081", "http://backend:8081"},
 		AllowedMethods:   []string{"GET", "POST", "PATCH", "DELETE", "OPTIONS"},
 		AllowedHeaders:   []string{"Content-Type", "Accept", "Authorization"},
 		AllowCredentials: true,
