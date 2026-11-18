@@ -16,8 +16,8 @@ type Config struct {
 }
 
 func main() {
-	// Загружаем .env вручную (если запускаем не через make)
-	_ = godotenv.Load()
+	_ = godotenv.Load("../.env")
+	_ = godotenv.Load(".env")
 
 	cfg := &Config{}
 	if err := env.Parse(cfg); err != nil {

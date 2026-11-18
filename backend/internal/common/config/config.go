@@ -28,9 +28,8 @@ type AppConfig struct {
 }
 
 func LoadConfig() (*AppConfig, error) {
-	if err := godotenv.Load(); err != nil {
-		fmt.Println(".env not found")
-	}
+	_ = godotenv.Load("../.env")
+	_ = godotenv.Load(".env")
 
 	port, err := getPort()
 	if err != nil {

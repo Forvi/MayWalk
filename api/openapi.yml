@@ -7,6 +7,8 @@ info:
 servers:
   - url: http://localhost:8080
     description: MayWalk localhost
+  - url: http://backend:8080
+    description: MayWalk container
   - url: http://maywalk-test:8080
     description: MayWalk test
   - url: http://maywalk:8080

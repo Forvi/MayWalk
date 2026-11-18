@@ -1,3 +1,4 @@
 .env
 .vscode
 build
+backend/docs/openapi.yml
