@@ -12,7 +12,6 @@ require (
 	github.com/lmittmann/tint v1.2.1 // direct
 	github.com/oapi-codegen/runtime v1.9.0
 	github.com/redis/go-redis/v9 v9.23.0
-	github.com/rs/cors v1.11.1
 	golang.org/x/crypto v0.58.1-0.20261009181718-2f1f834330b2
 	golang.org/x/oauth2 v0.38.0
 )
@@ -20,6 +19,7 @@ require (
 require (
 	github.com/apapsch/go-jsonmerge/v2 v2.0.0 // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
+	github.com/go-redis/redis_rate/v10 v10.0.1 // indirect
 	github.com/jackc/pgpassfile v1.0.0 // indirect
 	github.com/jackc/pgservicefile v0.0.0-20240606120523-5a60cdf6a761 // indirect
 	github.com/jackc/puddle/v2 v2.2.3 // indirect

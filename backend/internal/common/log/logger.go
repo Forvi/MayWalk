@@ -36,6 +36,5 @@ func NewLogger(cfg LoggerConfig) *slog.Logger {
 		})
 	}
 
-	logger := slog.New(handler)
-	return logger
+	return slog.New(ctxHandler{handler})
 }

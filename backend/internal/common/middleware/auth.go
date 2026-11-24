@@ -26,13 +26,13 @@ func RequireAuth(sessHandler sessionHandler, secret string, logger *slog.Logger)
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			cookie, err := r.Cookie("session_id")
 			if err != nil {
-				commonErrors.WriteError(w, commonErrors.NewDomainError("auth.unauthorized", "unauthorized", http.StatusUnauthorized), logger)
+				commonErrors.WriteError(w, r, commonErrors.NewDomainError("auth.unauthorized", "unauthorized", http.StatusUnauthorized), logger)
 				return
 			}
 
 			id, ok := session.VerifyID(cookie.Value, secret)
 			if !ok {
-				commonErrors.WriteError(w, commonErrors.NewDomainError("auth.unauthorized", "unauthorized", http.StatusUnauthorized), logger)
+				commonErrors.WriteError(w, r, commonErrors.NewDomainError("auth.unauthorized", "unauthorized", http.StatusUnauthorized), logger)
 				return
 			}
 
@@ -41,21 +41,21 @@ func RequireAuth(sessHandler sessionHandler, secret string, logger *slog.Logger)
 			sess, err := sessHandler.Get(r.Context(), sessionID)
 			if err != nil {
 				if errors.Is(err, session.ErrCacheNotFound) {
-					commonErrors.WriteError(w, commonErrors.NewDomainError("auth.unauthorized", "unauthorized", http.StatusUnauthorized), logger)
+					commonErrors.WriteError(w, r, commonErrors.NewDomainError("auth.unauthorized", "unauthorized", http.StatusUnauthorized), logger)
 				} else {
-					commonErrors.WriteError(w, commonErrors.NewDomainError("auth.internal_error", "internal server error", http.StatusInternalServerError), logger)
+					commonErrors.WriteError(w, r, commonErrors.NewDomainError("auth.internal_error", "internal server error", http.StatusInternalServerError), logger)
 				}
 				return
 			}
 
 			if sess.IsExpired() {
 				_ = sessHandler.Delete(r.Context(), sessionID)
-				commonErrors.WriteError(w, commonErrors.NewDomainError("auth.unauthorized", "unauthorized", http.StatusUnauthorized), logger)
+				commonErrors.WriteError(w, r, commonErrors.NewDomainError("auth.unauthorized", "unauthorized", http.StatusUnauthorized), logger)
 				return
 			}
 
 			if err := sessHandler.Refresh(r.Context(), sess); err != nil {
-				commonErrors.WriteError(w, commonErrors.NewDomainError("auth.unauthorized", "unauthorized", http.StatusUnauthorized), logger)
+				commonErrors.WriteError(w, r, commonErrors.NewDomainError("auth.unauthorized", "unauthorized", http.StatusUnauthorized), logger)
 				return
 			}
 
