@@ -149,6 +149,7 @@ func buildApp(mux *http.ServeMux, logger *slog.Logger) error {
 		sessions:   sessions,
 		sessionCfg: &cfg.SessionConfig,
 		logger:     logger,
+		cache:      cache.Redis,
 	})
 
 	return nil
