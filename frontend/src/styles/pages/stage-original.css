@@ -1,0 +1,2663 @@
+/*
+ * Оформление сцены (оригинальная концепция): общие стили страниц
+ * «Регистрация» (лендинг) и личного кабинета. Одинаковая разметка — один файл.
+ * Селекторы ограничены скоупом
+ *   :is([data-page="registration"], [data-page="cabinet"])
+ * Источник — дизайн-макет дизайнера (base.css + legacy.css).
+ */
+
+:is([data-page="registration"], [data-page="cabinet"]),
+:is([data-page="registration"], [data-page="cabinet"]) *{
+  box-sizing:border-box;
+}
+:is([data-page="registration"], [data-page="cabinet"]){
+  margin:0;
+  font-family:var(--font-ui,system-ui,sans-serif);
+  font-size:16px;
+  line-height:1.5;
+  color:var(--ink,#211923);
+  background:var(--canvas,#f3f2e8);
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) button,
+:is([data-page="registration"], [data-page="cabinet"]) input{
+  font:inherit;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) button,
+:is([data-page="registration"], [data-page="cabinet"]) a,
+:is([data-page="registration"], [data-page="cabinet"]) input{
+  touch-action:manipulation;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) a{
+  color:inherit;
+  text-underline-offset:.2em;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) button,
+:is([data-page="registration"], [data-page="cabinet"]) a{
+  -webkit-tap-highlight-color:transparent;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) button{
+  cursor:pointer;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) button:disabled{
+  cursor:not-allowed;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) button,
+:is([data-page="registration"], [data-page="cabinet"]) a,
+:is([data-page="registration"], [data-page="cabinet"]) input{
+  outline-offset:5px;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) button:focus-visible,
+:is([data-page="registration"], [data-page="cabinet"]) a:focus-visible,
+:is([data-page="registration"], [data-page="cabinet"]) input:focus-visible{
+  outline:3px solid var(--focus,#7728e8);
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) [hidden]{
+  display:none!important;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .shell{
+  width:min(calc(100% - 80px),1320px);
+  margin-inline:auto;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .global-header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:24px;
+  min-height:96px;
+  padding-block:20px;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .brand{
+  display:inline-flex;
+  align-items:center;
+  gap:13px;
+  text-decoration:none;
+  flex-shrink:0;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .brand-mark{
+  width:43px;
+  height:43px;
+  flex-shrink:0;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .brand-name{
+  font-family:var(--font-display,var(--font-ui,system-ui));
+  font-size:18px;
+  line-height:1.1;
+  font-weight:var(--display-weight,400);
+  letter-spacing:-.03em;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .header-links{
+  display:flex;
+  align-items:center;
+  justify-content:flex-end;
+  gap:28px;
+  flex-wrap:wrap;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .header-links a{
+  font-size:16px;
+  font-weight:650;
+  text-decoration:none;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .header-links a:hover{
+  text-decoration:underline;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .demo-label{
+  font-size:14px;
+  line-height:1.35;
+  border:1px solid currentColor;
+  border-radius:40px;
+  padding:7px 12px;
+  max-width:23em;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .registration-lead{
+  position:relative;
+  padding-block:28px 30px;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .lead-eyebrow{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  font-size:14px;
+  font-weight:700;
+  letter-spacing:.055em;
+  text-transform:uppercase;
+  margin:0 0 18px;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .lead-eyebrow::before{
+  content:'';
+  width:9px;
+  height:9px;
+  border-radius:50%;
+  background:currentColor;
+  flex:none;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .registration-lead h1{
+  font-family:var(--font-display,system-ui);
+  font-weight:var(--display-weight,400);
+  font-size:clamp(46px,7.2vw,108px);
+  line-height:1.11;
+  letter-spacing:-.055em;
+  margin:0;
+  max-width:100%;
+  overflow-wrap:normal;
+  word-break:normal;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .registration-lead h1 span{
+  display:inline-block;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .registration-lead h1 .title-tail{
+  margin-left:.1em;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .lead-mark{
+  position:absolute;
+  right:0;
+  top:19px;
+  width:105px;
+  height:105px;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .registration-workspace{
+  padding-block:30px 36px;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .registration-workspace-head{
+  display:flex;
+  align-items:baseline;
+  justify-content:space-between;
+  gap:20px;
+  margin-bottom:28px;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .registration-workspace h2{
+  font-size:30px;
+  line-height:1.2;
+  letter-spacing:-.035em;
+  margin:0;
+  font-weight:800;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .return-login{
+  font-size:16px;
+  margin:0;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .registration-columns{
+  display:grid;
+  grid-template-columns:minmax(230px,.72fr) minmax(0,1.8fr);
+  gap:60px;
+  align-items:start;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .social-option>p:not(.option-label):not(.social-note){
+  max-width:29em;
+  margin:16px 0 0;
+  font-size:16px;
+  line-height:1.6;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .social-option>.social-note{
+  max-width:29em;
+  margin:10px 0 0;
+  font-size:14px;
+  line-height:1.5;
+  color:var(--muted);
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .option-label{
+  margin:0 0 16px;
+  font-size:16px;
+  line-height:1.5;
+  font-weight:750;
+  letter-spacing:.055em;
+  text-transform:uppercase;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .auth-form{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:22px 24px;
+  min-width:0;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .field{
+  min-width:0;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .field.full{
+  grid-column:1/-1;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .field label{
+  display:block;
+  font-size:16px;
+  font-weight:700;
+  margin:0 0 9px;
+  line-height:1.4;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .field input{
+  display:block;
+  width:100%;
+  min-width:0;
+  min-height:56px;
+  padding:14px 16px;
+  border:1.5px solid var(--field-border,var(--ink));
+  border-radius:var(--field-radius,0px);
+  font-size:17px;
+  line-height:1.5;
+  background:var(--field-bg,#fff);
+  color:var(--ink);
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) input::placeholder{
+  color:var(--input-placeholder,#6e6571);
+  opacity:1;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .field input:focus{
+  border-color:var(--focus);
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .field input[aria-invalid=true]{
+  border-color:var(--error,#9e283b);
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .password-box{
+  position:relative;
+  min-width:0;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .password-box input{
+  padding-right:66px;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .password-toggle{
+  position:absolute;
+  right:4px;
+  top:4px;
+  bottom:4px;
+  width:48px;
+  min-height:48px;
+  border:0;
+  border-radius:var(--field-radius,0px);
+  color:var(--ink);
+  background:transparent;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .password-toggle svg{
+  width:24px;
+  height:24px;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .field-error{
+  font-size:14px;
+  line-height:1.5;
+  color:var(--error,#9e283b);
+  margin:8px 0 0;
+  overflow-wrap:anywhere;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .consent{
+  grid-column:1/-1;
+  display:flex;
+  gap:12px;
+  align-items:flex-start;
+  font-size:14px;
+  line-height:1.55;
+  min-width:0;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .consent input{
+  appearance:none;
+  width:24px;
+  min-width:24px;
+  height:24px;
+  border:1.5px solid var(--ink);
+  border-radius:0;
+  background:var(--field-bg,#fff);
+  margin:0;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .consent input:checked{
+  background:var(--ink);
+  box-shadow:inset 0 0 0 4px var(--field-bg,#fff);
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .consent span{
+  min-width:0;
+  overflow-wrap:anywhere;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .consent .field-error{
+  margin-top:7px;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .form-actions{
+  display:flex;
+  gap:18px;
+  align-items:center;
+  flex-wrap:wrap;
+  grid-column:1/-1;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .form-actions .primary-button{
+  min-width:260px;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .form-feedback{
+  grid-column:1/-1;
+  border-left:3px solid var(--accent,var(--ink));
+  padding-left:14px;
+  font-size:14px;
+  line-height:1.6;
+  margin:0;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .primary-button,
+:is([data-page="registration"], [data-page="cabinet"]) .secondary-button,
+:is([data-page="registration"], [data-page="cabinet"]) .vk-button,
+:is([data-page="registration"], [data-page="cabinet"]) .plain-button{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:12px;
+  padding:14px 22px;
+  min-height:56px;
+  font-size:18px;
+  font-weight:750;
+  line-height:1.4;
+  text-decoration:none;
+  text-align:center;
+  white-space:normal;
+  overflow-wrap:anywhere;
+  max-width:100%;
+  border:1.5px solid var(--ink);
+  border-radius:var(--button-radius,0px);
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .primary-button{
+  background:var(--primary-bg,var(--ink));
+  color:var(--primary-ink,#fff);
+  border-color:var(--primary-bg,var(--ink));
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .primary-button:hover{
+  background:var(--primary-hover,#422d53);
+  border-color:var(--primary-hover,#422d53);
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .secondary-button{
+  background:transparent;
+  color:var(--ink);
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .secondary-button:hover{
+  background:var(--hover-bg,#ece9d9);
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .vk-button{
+  width:100%;
+  background:#0066e0;
+  color:#fff;
+  border-color:#0066e0;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .vk-button:hover{
+  background:#0057c2;
+  border-color:#0057c2;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .vk-button svg{
+  width:26px;
+  height:26px;
+  flex:none;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .plain-button{
+  border-color:transparent;
+  background:transparent;
+  color:inherit;
+  font-size:16px;
+  padding-inline:10px;
+  min-height:44px;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .plain-button:hover{
+  text-decoration:none;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .preview-link{
+  font-size:16px;
+  font-weight:700;
+  line-height:1.5;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .registration-outro{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:24px;
+  padding-block:24px;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .registration-outro .outro-title{
+  font-family:var(--font-display,system-ui);
+  font-weight:var(--display-weight,400);
+  font-size:28px;
+  line-height:1.3;
+  margin:0;
+  letter-spacing:-.03em;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .registration-outro>p:not(.outro-title){
+  max-width:33em;
+  font-size:14px;
+  margin:0;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .site-footer{
+  display:flex;
+  justify-content:space-between;
+  gap:20px;
+  flex-wrap:wrap;
+  padding-block:24px 30px;
+  font-size:14px;
+  line-height:1.5;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .site-footer p{
+  margin:0;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .site-footer-links{
+  display:flex;
+  flex-wrap:wrap;
+  gap:12px 24px;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .cabinet-nav{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:24px;
+  padding-block:17px;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .cabinet-nav-tabs{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .cabinet-tab{
+  border:0;
+  background:transparent;
+  color:var(--muted);
+  font-size:17px;
+  font-weight:750;
+  padding:10px 16px;
+  min-height:48px;
+  border-radius:var(--button-radius,0px);
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .cabinet-tab[aria-selected=true]{
+  background:var(--nav-active-bg,var(--ink));
+  color:var(--nav-active-ink,#fff);
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .exit-link{
+  font-size:16px;
+  font-weight:650;
+  white-space:normal;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .page-intro{
+  padding-block:28px 24px;
+  display:flex;
+  justify-content:space-between;
+  gap:30px;
+  align-items:flex-end;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .page-intro h1{
+  font-size:42px;
+  font-weight:800;
+  line-height:1.2;
+  letter-spacing:-.04em;
+  margin:0;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .page-intro .page-context{
+  font-size:14px;
+  margin:10px 0 0;
+  color:var(--muted);
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .participant{
+  font-size:16px;
+  line-height:1.5;
+  margin:0;
+  text-align:right;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .participant strong{
+  font-weight:750;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .route-stage{
+  display:grid;
+  grid-template-columns:minmax(250px,.9fr) minmax(0,1.35fr);
+  position:relative;
+  isolation:isolate;
+  min-width:0;
+  background:var(--stage-bg,#eee);
+  color:var(--stage-ink,#211923);
+  border-radius:var(--stage-radius,0px);
+  overflow:hidden;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .route-stage__metric{
+  position:relative;
+  isolation:isolate;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:32px;
+  min-height:315px;
+  min-width:0;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .distance-text{
+  font-family:var(--font-display,system-ui);
+  font-weight:var(--display-weight,400);
+  font-size:clamp(105px,12vw,180px);
+  line-height:1;
+  letter-spacing:-.07em;
+  position:relative;
+  z-index:1;
+  white-space:nowrap;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .distance-text small{
+  font-family:var(--font-ui,system-ui);
+  font-size:24px;
+  font-weight:650;
+  letter-spacing:-.025em;
+  display:block;
+  text-align:right;
+  margin-top:3px;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .route-stage__metric svg{
+  position:absolute;
+  width:270px;
+  height:270px;
+  inset:0;
+  margin:auto;
+  z-index:-1;
+  color:var(--metric-mark,#ddd);
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .route-stage__body{
+  padding:32px;
+  min-width:0;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .route-kicker{
+  font-size:14px;
+  line-height:1.5;
+  font-weight:700;
+  margin:8px 0 0;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .route-title{
+  font-family:var(--font-display,system-ui);
+  font-weight:var(--display-weight,400);
+  font-size:clamp(28px,3vw,44px);
+  line-height:1.23;
+  letter-spacing:-.035em;
+  overflow-wrap:anywhere;
+  margin:0;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .route-description{
+  font-size:17px;
+  line-height:1.6;
+  max-width:38em;
+  margin:12px 0 0;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .status-label{
+  display:inline-flex;
+  padding:7px 12px;
+  font-size:14px;
+  font-weight:700;
+  line-height:1.4;
+  border:1px solid currentColor;
+  border-radius:50px;
+  margin:18px 0 0;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .route-actions{
+  margin-top:14px;
+  display:flex;
+  gap:10px 18px;
+  align-items:center;
+  flex-wrap:wrap;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .route-stage .primary-button{
+  background:var(--stage-action,#211923);
+  color:var(--stage-action-ink,#fff);
+  border-color:var(--stage-action,#211923);
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .route-stage .primary-button:hover{
+  filter:brightness(.94);
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .route-stage .plain-button{
+  color:inherit;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .stage-footnote{
+  grid-column:1/-1;
+  border-top:1px solid var(--stage-line,currentColor);
+  padding:13px 25px;
+  font-size:14px;
+  line-height:1.5;
+  margin:0;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .empty-stage .route-stage__metric{
+  min-height:280px;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .empty-distance{
+  font-size:100px;
+  line-height:1;
+  font-family:var(--font-display,system-ui);
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .preparation{
+  display:grid;
+  grid-template-columns:minmax(0,.9fr) minmax(0,1.35fr);
+  gap:20px 45px;
+  margin-block:32px 36px;
+  padding-top:26px;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .preparation h2{
+  font-family:var(--font-display,system-ui);
+  font-weight:var(--display-weight,400);
+  font-size:30px;
+  line-height:1.3;
+  letter-spacing:-.035em;
+  max-width:13em;
+  margin:0;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .preparation .section-number{
+  font-size:14px;
+  font-weight:750;
+  letter-spacing:.06em;
+  text-transform:uppercase;
+  margin:0 0 16px;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .preparation-body{
+  min-width:0;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .preparation-body>p{
+  font-size:17px;
+  line-height:1.6;
+  margin:0 0 20px;
+  max-width:46em;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .prep-actions{
+  display:flex;
+  align-items:center;
+  gap:14px 20px;
+  flex-wrap:wrap;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .prep-actions .secondary-button{
+  min-width:220px;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .service-links{
+  display:flex;
+  gap:14px 24px;
+  flex-wrap:wrap;
+  font-size:16px;
+  margin-top:24px;
+  padding-top:20px;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .disabled-note{
+  font-size:14px;
+  line-height:1.6;
+  color:var(--muted);
+  margin:8px 0 0;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .profile-surface{
+  display:grid;
+  grid-template-columns:minmax(220px,.9fr) minmax(0,1.35fr);
+  gap:24px 45px;
+  padding:32px;
+  min-height:0;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .profile-aside h2{
+  font-family:var(--font-display,system-ui);
+  font-weight:var(--display-weight,400);
+  font-size:30px;
+  line-height:1.3;
+  letter-spacing:-.035em;
+  margin:0 0 12px;
+  max-width:13em;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .profile-aside p{
+  font-size:16px;
+  line-height:1.6;
+  max-width:25em;
+  margin:0;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .profile-details{
+  margin:0 0 24px;
+  display:grid;
+  gap:23px;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .profile-details dt{
+  font-size:16px;
+  font-weight:700;
+  margin-bottom:6px;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .profile-details dd{
+  font-size:20px;
+  font-weight:600;
+  margin:0;
+  overflow-wrap:anywhere;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .profile-form{
+  display:grid;
+  gap:22px;
+  max-width:650px;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .profile-form .form-actions .primary-button{
+  min-width:180px;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .profile-feedback{
+  font-size:14px;
+  line-height:1.6;
+  margin:0;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .profile-feedback:not(:empty){
+  margin-top:18px;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .dialog{
+  border:0;
+  padding:0;
+  width:min(800px,calc(100% - 32px));
+  max-height:calc(100dvh - 32px);
+  background:var(--dialog-bg,var(--canvas));
+  color:var(--ink);
+  border-radius:var(--dialog-radius,0px);
+  box-shadow:0 20px 70px #0003;
+  overflow:auto;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .dialog::backdrop{
+  background:#161020b3;
+  backdrop-filter:blur(3px);
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .dialog-inner{
+  position:relative;
+  padding:34px;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .dialog-close{
+  position:absolute;
+  right:16px;
+  top:16px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  width:44px;
+  height:44px;
+  background:transparent;
+  border:1px solid var(--line);
+  border-radius:50%;
+  color:var(--ink);
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .dialog-close svg{
+  width:22px;
+  height:22px;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .dialog h2{
+  font-family:var(--font-display,system-ui);
+  font-weight:var(--display-weight,400);
+  font-size:29px;
+  line-height:1.3;
+  letter-spacing:-.035em;
+  margin:0 45px 14px 0;
+  overflow-wrap:anywhere;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .dialog-description{
+  font-size:16px;
+  line-height:1.6;
+  margin:0 0 23px;
+  max-width:42em;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .route-options{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+  padding:0;
+  margin:0;
+  border:0;
+  min-width:0;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .route-options legend{
+  font-size:16px;
+  font-weight:700;
+  margin-bottom:14px;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .route-option{
+  position:relative;
+  display:flex;
+  gap:12px;
+  align-items:flex-start;
+  min-width:0;
+  min-height:130px;
+  padding:17px;
+  border:1.5px solid var(--field-border,var(--ink));
+  border-radius:var(--field-radius,0px);
+  background:var(--field-bg,#fff);
+  cursor:pointer;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .route-option:has(input:checked){
+  background:var(--selected-bg,#e6f298);
+  border-color:var(--ink);
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .route-option input{
+  appearance:none;
+  flex:none;
+  width:22px;
+  height:22px;
+  border:1.5px solid var(--ink);
+  border-radius:50%;
+  margin:6px 0 0;
+  background:transparent;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .route-option input:checked{
+  background:var(--ink);
+  box-shadow:inset 0 0 0 5px var(--selected-bg,#e6f298);
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .route-option-copy{
+  min-width:0;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .route-option strong{
+  display:block;
+  font-family:var(--font-display,system-ui);
+  font-weight:var(--display-weight,400);
+  font-size:26px;
+  line-height:1.25;
+  letter-spacing:-.03em;
+  overflow-wrap:anywhere;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .route-option .route-option-title{
+  display:block;
+  font-size:16px;
+  font-weight:750;
+  margin-top:10px;
+  line-height:1.45;
+  overflow-wrap:anywhere;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .route-option .route-option-description{
+  display:block;
+  font-size:14px;
+  line-height:1.55;
+  margin-top:7px;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .dialog-actions{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  flex-wrap:wrap;
+  margin-top:26px;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .dialog-actions .primary-button{
+  min-width:225px;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .sample-sheet{
+  border-top:2px solid var(--ink);
+  border-bottom:1px solid var(--line);
+  padding-block:20px;
+  margin:22px 0;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .sample-watermark{
+  font-family:var(--font-display,system-ui);
+  font-weight:var(--display-weight,400);
+  font-size:clamp(24px,5vw,44px);
+  line-height:1.2;
+  letter-spacing:-.03em;
+  overflow-wrap:anywhere;
+  color:var(--sample-ink,#5c26df);
+  margin:0 0 20px;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .sample-values{
+  display:grid;
+  gap:16px;
+  margin:0;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .sample-values dt{
+  font-size:14px;
+  font-weight:700;
+  margin-bottom:3px;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .sample-values dd{
+  font-size:17px;
+  font-weight:650;
+  margin:0;
+  overflow-wrap:anywhere;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .sample-note{
+  font-size:16px;
+  line-height:1.6;
+  margin:18px 0 0;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .vk-dialog{
+  width:min(560px,calc(100% - 32px));
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .vk-dialog .dialog-inner{
+  padding-top:42px;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .vk-dialog h2{
+  font-size:28px;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .vk-dialog .demo-label{
+  display:inline-block;
+  margin-bottom:22px;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .vk-dialog p{
+  font-size:16px;
+  line-height:1.65;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .vk-dialog p.dialog-note{
+  font-size:14px;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .static-state-note{
+  padding:14px 20px;
+  font-size:14px;
+  border-top:1px solid var(--line);
+  margin:0;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .visual-sheet .dialog{
+  position:relative;
+  display:block;
+  margin:30px auto;
+  max-height:none;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .visual-sheet-title{
+  font-size:24px;
+  margin:30px auto 0;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .footer-demo{
+  font-size:14px;
+  color:var(--muted);
+  margin-block:18px 0;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .profile-fieldset{
+  border:0;
+  padding:0;
+  margin:0;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .error-summary{
+  font-size:14px;
+  line-height:1.6;
+  border-left:3px solid var(--error);
+  padding-left:12px;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .sample-disabled{
+  opacity:.5;
+  cursor:not-allowed;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .route-alert{
+  margin-top:18px;
+  font-size:14px;
+  line-height:1.6;
+  color:var(--muted);
+}
+
+@media(min-width:1450px) {
+  :is([data-page="registration"], [data-page="cabinet"]) .registration-lead h1{
+    font-size:116px;
+  }
+
+}
+
+@media(max-width:1180px) {
+  :is([data-page="registration"], [data-page="cabinet"]) .shell{
+    width:calc(100% - 64px);
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .registration-columns{
+    gap:36px;
+    grid-template-columns:minmax(220px,.75fr) minmax(0,1.65fr);
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .registration-lead h1{
+    font-size:7.7vw;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .lead-mark{
+    width:90px;
+    height:90px;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .route-stage__body{
+    padding:30px;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .route-stage__metric{
+    padding:25px;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .distance-text{
+    font-size:13vw;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .preparation{
+    gap:20px 32px;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .profile-surface{
+    gap:24px 32px;
+    padding-inline:30px;
+  }
+
+}
+
+@media(max-width:900px) {
+  :is([data-page="registration"], [data-page="cabinet"]) .registration-lead h1{
+    font-size:8vw;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .registration-columns{
+    display:flex;
+    flex-wrap:wrap;
+    gap:32px;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .social-option{
+    display:block;
+    flex:1 1 15em;
+    min-inline-size:0;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .email-option{
+    flex:1.5 1 19em;
+    min-inline-size:0;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .registration-lead{
+    padding-block:25px;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .lead-mark{
+    width:72px;
+    height:72px;
+    top:30px;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .registration-workspace{
+    padding-top:24px;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .registration-workspace-head{
+    margin-bottom:24px;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .email-option .auth-form{
+    max-width:none;
+    grid-template-columns:minmax(0,1fr);
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .email-option .field.full,
+:is([data-page="registration"], [data-page="cabinet"]) .email-option .consent,
+:is([data-page="registration"], [data-page="cabinet"]) .email-option .form-actions,
+:is([data-page="registration"], [data-page="cabinet"]) .email-option .form-feedback{
+    grid-column:auto;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .email-option .form-actions .primary-button{
+    width:100%;
+    min-width:0;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .route-stage{
+    grid-template-columns:minmax(210px,.75fr) minmax(0,1.25fr);
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .route-stage__metric{
+    min-height:300px;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .route-stage__metric svg{
+    width:220px;
+    height:220px;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .route-stage__body{
+    padding:27px;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .route-title{
+    font-size:30px;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .distance-text{
+    font-size:108px;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .distance-text small{
+    display:inline-block;
+    margin-top:0;
+    margin-left:.2em;
+    line-height:1;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .route-stage__metric:after{
+    display:none;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .preparation{
+    grid-template-columns:minmax(200px,.75fr) minmax(0,1.25fr);
+    gap:20px 25px;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .preparation h2{
+    font-size:26px;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .profile-surface{
+    grid-template-columns:minmax(180px,.75fr) minmax(0,1.25fr);
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .profile-aside h2{
+    font-size:26px;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .page-intro h1{
+    font-size:36px;
+  }
+
+}
+
+@media(max-width:650px) {
+  :is([data-page="registration"], [data-page="cabinet"]) .shell{
+    width:calc(100% - 40px);
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .global-header{
+    min-height:84px;
+    align-items:flex-start;
+    gap:16px;
+    padding-block:18px;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .brand-name{
+    font-size:15px;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .brand-mark{
+    width:34px;
+    height:34px;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .brand{
+    gap:9px;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .header-links{
+    gap:12px;
+    align-items:flex-end;
+    flex-direction:column;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .header-links a{
+    font-size:14px;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .demo-label{
+    font-size:14px;
+    max-width:none;
+    padding:5px 10px;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .header-links .demo-label{
+    display:none;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .registration-lead{
+    padding-block:20px 23px;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .lead-eyebrow{
+    font-size:14px;
+    letter-spacing:0;
+    margin-bottom:13px;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .registration-lead h1{
+    font-size:clamp(33px,8.4vw,53px);
+    line-height:1.16;
+    letter-spacing:-.05em;
+    max-width:11em;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .registration-lead h1 span{
+    display:block;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .registration-lead h1 .title-tail{
+    margin-left:0;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .lead-mark{
+    width:77px;
+    height:77px;
+    right:0;
+    top:34px;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .registration-workspace{
+    padding-block:22px 26px;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .registration-workspace-head{
+    align-items:flex-start;
+    flex-direction:column;
+    gap:10px;
+    margin-bottom:21px;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .registration-workspace h2{
+    font-size:26px;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .return-login{
+    font-size:16px;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .social-option,
+:is([data-page="registration"], [data-page="cabinet"]) .email-option{
+    flex-basis:100%;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .auth-form{
+    grid-template-columns:minmax(0,1fr);
+    gap:20px;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .field.full,
+:is([data-page="registration"], [data-page="cabinet"]) .consent,
+:is([data-page="registration"], [data-page="cabinet"]) .form-actions,
+:is([data-page="registration"], [data-page="cabinet"]) .form-feedback{
+    grid-column:auto;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .field input{
+    font-size:17px;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .form-actions{
+    align-items:stretch;
+    gap:16px;
+    flex-direction:column;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .form-actions .primary-button{
+    width:100%;
+    min-width:0;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .form-actions .preview-link{
+    text-align:center;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .registration-outro{
+    align-items:flex-start;
+    flex-direction:column;
+    gap:15px;
+    padding-block:20px;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .registration-outro .outro-title{
+    font-size:23px;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .site-footer{
+    gap:16px;
+    padding-block:20px;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .site-footer-links{
+    gap:12px;
+    flex-direction:column;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .cabinet-nav{
+    padding-block:13px;
+    gap:15px;
+    align-items:flex-start;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .cabinet-nav-tabs{
+    gap:4px;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .cabinet-tab{
+    font-size:16px;
+    padding:10px 12px;
+    min-height:46px;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .exit-link{
+    font-size:14px;
+    padding-top:12px;
+    max-width:6em;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .page-intro{
+    padding-block:21px 22px;
+    align-items:flex-start;
+    gap:18px;
+    flex-direction:column;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .page-intro h1{
+    font-size:31px;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .page-intro .page-context{
+    font-size:14px;
+    margin-top:7px;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .participant{
+    text-align:left;
+    font-size:16px;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .route-stage{
+    grid-template-columns:minmax(0,1fr);
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .route-stage__metric{
+    min-height:0;
+    padding:22px 20px 12px;
+    justify-content:flex-start;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .route-stage__metric svg{
+    width:145px;
+    height:145px;
+    left:auto;
+    right:16px;
+    top:8px;
+    bottom:auto;
+    opacity:1;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .distance-text{
+    font-size:76px;
+    letter-spacing:-.06em;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .distance-text small{
+    display:inline;
+    font-size:20px;
+    margin-left:5px;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .route-stage__body{
+    padding:12px 20px 24px;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .route-title{
+    font-size:27px;
+    line-height:1.3;
+    margin-bottom:0;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .route-description{
+    font-size:17px;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .status-label{
+    margin-bottom:0;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .route-actions{
+    align-items:stretch;
+    gap:10px;
+    flex-direction:column;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .route-actions .primary-button{
+    width:100%;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .route-actions .plain-button{
+    align-self:flex-start;
+    padding-left:0;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .stage-footnote{
+    grid-column:auto;
+    padding:13px 22px;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .preparation{
+    grid-template-columns:minmax(0,1fr);
+    gap:20px;
+    margin-block:28px;
+    padding-top:22px;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .preparation .section-number{
+    margin-bottom:13px;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .preparation h2{
+    font-size:25px;
+    max-width:13em;
+    margin-bottom:0;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .preparation-body>p{
+    font-size:17px;
+    line-height:1.6;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .prep-actions{
+    align-items:stretch;
+    flex-direction:column;
+    gap:14px;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .prep-actions .secondary-button{
+    min-width:0;
+    width:100%;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .prep-actions>a:not(.secondary-button){
+    align-self:flex-start;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .service-links{
+    font-size:16px;
+    gap:13px 22px;
+    margin-top:21px;
+    padding-top:18px;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .empty-stage .route-stage__metric{
+    min-height:0;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .empty-distance{
+    font-size:75px;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .profile-surface{
+    grid-template-columns:minmax(0,1fr);
+    gap:20px;
+    padding:24px 20px;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .profile-aside h2{
+    font-size:25px;
+    max-width:13em;
+    margin-bottom:12px;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .profile-aside p{
+    max-width:35em;
+    margin:0;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .profile-details dd{
+    font-size:20px;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .profile-form .form-actions{
+    flex-direction:row;
+    flex-wrap:wrap;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .profile-form .form-actions .primary-button{
+    min-width:140px;
+    width:auto;
+    flex:1;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .profile-form .form-actions .secondary-button{
+    flex:1;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .dialog-inner{
+    padding:27px 20px;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .dialog-close{
+    top:12px;
+    right:12px;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .dialog h2{
+    font-size:23px;
+    letter-spacing:-.035em;
+    margin-right:38px;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .dialog-description{
+    font-size:16px;
+    line-height:1.6;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .route-options{
+    grid-template-columns:minmax(0,1fr);
+    gap:10px;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .route-option{
+    min-height:0;
+    padding:15px;
+    gap:11px;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .route-option strong{
+    font-size:24px;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .route-option .route-option-title{
+    margin-top:5px;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .dialog-actions{
+    flex-direction:column;
+    align-items:stretch;
+    gap:12px;
+    margin-top:22px;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .dialog-actions .primary-button{
+    min-width:0;
+    width:100%;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .dialog-actions .secondary-button{
+    width:100%;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .sample-watermark{
+    font-size:29px;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .vk-dialog .dialog-inner{
+    padding-top:42px;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .vk-dialog h2{
+    font-size:24px;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .visual-sheet .dialog{
+    width:calc(100% - 24px);
+  }
+
+}
+
+@media(max-width:360px) {
+  :is([data-page="registration"], [data-page="cabinet"]) .shell{
+    width:calc(100% - 32px);
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .brand-name{
+    font-size:14px;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .brand-mark{
+    width:31px;
+    height:31px;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .lead-mark{
+    width:62px;
+    height:62px;
+    top:42px;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .registration-lead h1{
+    font-size:34px;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .lead-eyebrow{
+    font-size:14px;
+    gap:8px;
+    max-width:16em;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .page-intro h1{
+    font-size:28px;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .page-intro{
+    gap:14px;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .cabinet-tab{
+    padding-inline:9px;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .route-stage__body{
+    padding-inline:20px;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .route-stage__metric{
+    padding-inline:20px;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .route-title{
+    font-size:24px;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .stage-footnote{
+    padding-inline:19px;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .dialog h2{
+    font-size:22px;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .dialog-inner{
+    padding-inline:18px;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .primary-button,
+:is([data-page="registration"], [data-page="cabinet"]) .secondary-button,
+:is([data-page="registration"], [data-page="cabinet"]) .vk-button{
+    padding-inline:17px;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .form-actions .primary-button{
+    font-size:18px;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .registration-workspace h2{
+    font-size:25px;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .registration-outro .outro-title{
+    font-size:22px;
+  }
+
+}
+
+@media print {
+  :is([data-page="registration"], [data-page="cabinet"]){
+    background:white;
+    color:black;
+    font:12pt/1.5 sans-serif;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) >*{
+    display:none!important;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) dialog[data-sample-dialog][open]{
+    display:block!important;
+    position:static;
+    width:100%;
+    max-width:none;
+    max-height:none;
+    margin:0;
+    overflow:visible;
+    color:black;
+    background:white;
+    box-shadow:none;
+    border:0;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) dialog[data-sample-dialog] .dialog-inner{
+    padding:0;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .dialog-close,
+:is([data-page="registration"], [data-page="cabinet"]) .dialog-actions{
+    display:none!important;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .sample-watermark{
+    font-size:32pt;
+    color:black!important;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .sample-sheet{
+    border-color:black;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .sample-values dd{
+    font-size:14pt;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .sample-note{
+    font-size:12pt;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .sample-values{
+    break-inside:avoid;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .sample-sheet{
+    break-inside:avoid;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .sample-watermark:before{
+    content:'Майская прогулка · ';
+  }
+
+}
+
+@media(min-width:1450px){:is([data-page="registration"], [data-page="cabinet"]) .registration-lead h1{font-size:116px}}
+@media(max-width:1180px){:is([data-page="registration"], [data-page="cabinet"]) .shell{width:calc(100% - 64px)}:is([data-page="registration"], [data-page="cabinet"]) .registration-columns{gap:36px;grid-template-columns:minmax(220px,.75fr) minmax(0,1.65fr)}:is([data-page="registration"], [data-page="cabinet"]) .registration-lead h1{font-size:7.7vw}:is([data-page="registration"], [data-page="cabinet"]) .lead-mark{width:90px;height:90px}:is([data-page="registration"], [data-page="cabinet"]) .route-stage__body{padding:30px}:is([data-page="registration"], [data-page="cabinet"]) .route-stage__metric{padding:25px}:is([data-page="registration"], [data-page="cabinet"]) .distance-text{font-size:13vw}:is([data-page="registration"], [data-page="cabinet"]) .preparation{gap:20px 32px}:is([data-page="registration"], [data-page="cabinet"]) .profile-surface{gap:24px 32px;padding-inline:30px}}
+@media(max-width:900px){:is([data-page="registration"], [data-page="cabinet"]) .registration-lead h1{font-size:8vw}:is([data-page="registration"], [data-page="cabinet"]) .registration-columns{display:flex;flex-wrap:wrap;gap:32px}:is([data-page="registration"], [data-page="cabinet"]) .social-option{display:block;flex:1 1 15em;min-inline-size:0}:is([data-page="registration"], [data-page="cabinet"]) .email-option{flex:1.5 1 19em;min-inline-size:0}:is([data-page="registration"], [data-page="cabinet"]) .registration-lead{padding-block:25px}:is([data-page="registration"], [data-page="cabinet"]) .lead-mark{width:72px;height:72px;top:30px}:is([data-page="registration"], [data-page="cabinet"]) .registration-workspace{padding-top:24px}:is([data-page="registration"], [data-page="cabinet"]) .registration-workspace-head{margin-bottom:24px}:is([data-page="registration"], [data-page="cabinet"]) .email-option .auth-form{max-width:none;grid-template-columns:minmax(0,1fr)}:is([data-page="registration"], [data-page="cabinet"]) .email-option .field.full,
+:is([data-page="registration"], [data-page="cabinet"]) .email-option .consent,
+:is([data-page="registration"], [data-page="cabinet"]) .email-option .form-actions,
+:is([data-page="registration"], [data-page="cabinet"]) .email-option .form-feedback{grid-column:auto}:is([data-page="registration"], [data-page="cabinet"]) .email-option .form-actions .primary-button{width:100%;min-width:0}:is([data-page="registration"], [data-page="cabinet"]) .route-stage{grid-template-columns:minmax(210px,.75fr) minmax(0,1.25fr)}:is([data-page="registration"], [data-page="cabinet"]) .route-stage__metric{min-height:300px}:is([data-page="registration"], [data-page="cabinet"]) .route-stage__metric svg{width:220px;height:220px}:is([data-page="registration"], [data-page="cabinet"]) .route-stage__body{padding:27px}:is([data-page="registration"], [data-page="cabinet"]) .route-title{font-size:30px}:is([data-page="registration"], [data-page="cabinet"]) .distance-text{font-size:108px}:is([data-page="registration"], [data-page="cabinet"]) .distance-text small{display:inline-block;margin-top:0;margin-left:.2em;line-height:1}:is([data-page="registration"], [data-page="cabinet"]) .route-stage__metric:after{display:none}:is([data-page="registration"], [data-page="cabinet"]) .preparation{grid-template-columns:minmax(200px,.75fr) minmax(0,1.25fr);gap:20px 25px}:is([data-page="registration"], [data-page="cabinet"]) .preparation h2{font-size:26px}:is([data-page="registration"], [data-page="cabinet"]) .profile-surface{grid-template-columns:minmax(180px,.75fr) minmax(0,1.25fr)}:is([data-page="registration"], [data-page="cabinet"]) .profile-aside h2{font-size:26px}:is([data-page="registration"], [data-page="cabinet"]) .page-intro h1{font-size:36px}}
+@media(max-width:650px){:is([data-page="registration"], [data-page="cabinet"]) .shell{width:calc(100% - 40px)}:is([data-page="registration"], [data-page="cabinet"]) .global-header{min-height:84px;align-items:flex-start;gap:16px;padding-block:18px}:is([data-page="registration"], [data-page="cabinet"]) .brand-name{font-size:15px}:is([data-page="registration"], [data-page="cabinet"]) .brand-mark{width:34px;height:34px}:is([data-page="registration"], [data-page="cabinet"]) .brand{gap:9px}:is([data-page="registration"], [data-page="cabinet"]) .header-links{gap:12px;align-items:flex-end;flex-direction:column}:is([data-page="registration"], [data-page="cabinet"]) .header-links a{font-size:14px}:is([data-page="registration"], [data-page="cabinet"]) .demo-label{font-size:14px;max-width:none;padding:5px 10px}:is([data-page="registration"], [data-page="cabinet"]) .header-links .demo-label{display:none}:is([data-page="registration"], [data-page="cabinet"]) .registration-lead{padding-block:20px 23px}:is([data-page="registration"], [data-page="cabinet"]) .lead-eyebrow{font-size:14px;letter-spacing:0;margin-bottom:13px}:is([data-page="registration"], [data-page="cabinet"]) .registration-lead h1{font-size:clamp(33px,8.4vw,53px);line-height:1.16;letter-spacing:-.05em;max-width:11em}:is([data-page="registration"], [data-page="cabinet"]) .registration-lead h1 span{display:block}:is([data-page="registration"], [data-page="cabinet"]) .registration-lead h1 .title-tail{margin-left:0}:is([data-page="registration"], [data-page="cabinet"]) .lead-mark{width:77px;height:77px;right:0;top:34px}:is([data-page="registration"], [data-page="cabinet"]) .registration-workspace{padding-block:22px 26px}:is([data-page="registration"], [data-page="cabinet"]) .registration-workspace-head{align-items:flex-start;flex-direction:column;gap:10px;margin-bottom:21px}:is([data-page="registration"], [data-page="cabinet"]) .registration-workspace h2{font-size:26px}:is([data-page="registration"], [data-page="cabinet"]) .return-login{font-size:16px}:is([data-page="registration"], [data-page="cabinet"]) .social-option,
+:is([data-page="registration"], [data-page="cabinet"]) .email-option{flex-basis:100%}:is([data-page="registration"], [data-page="cabinet"]) .auth-form{grid-template-columns:minmax(0,1fr);gap:20px}:is([data-page="registration"], [data-page="cabinet"]) .field.full,
+:is([data-page="registration"], [data-page="cabinet"]) .consent,
+:is([data-page="registration"], [data-page="cabinet"]) .form-actions,
+:is([data-page="registration"], [data-page="cabinet"]) .form-feedback{grid-column:auto}:is([data-page="registration"], [data-page="cabinet"]) .field input{font-size:17px}:is([data-page="registration"], [data-page="cabinet"]) .form-actions{align-items:stretch;gap:16px;flex-direction:column}:is([data-page="registration"], [data-page="cabinet"]) .form-actions .primary-button{width:100%;min-width:0}:is([data-page="registration"], [data-page="cabinet"]) .form-actions .preview-link{text-align:center}:is([data-page="registration"], [data-page="cabinet"]) .registration-outro{align-items:flex-start;flex-direction:column;gap:15px;padding-block:20px}:is([data-page="registration"], [data-page="cabinet"]) .registration-outro .outro-title{font-size:23px}:is([data-page="registration"], [data-page="cabinet"]) .site-footer{gap:16px;padding-block:20px}:is([data-page="registration"], [data-page="cabinet"]) .site-footer-links{gap:12px;flex-direction:column}:is([data-page="registration"], [data-page="cabinet"]) .cabinet-nav{padding-block:13px;gap:15px;align-items:flex-start}:is([data-page="registration"], [data-page="cabinet"]) .cabinet-nav-tabs{gap:4px}:is([data-page="registration"], [data-page="cabinet"]) .cabinet-tab{font-size:16px;padding:10px 12px;min-height:46px}:is([data-page="registration"], [data-page="cabinet"]) .exit-link{font-size:14px;padding-top:12px;max-width:6em}:is([data-page="registration"], [data-page="cabinet"]) .page-intro{padding-block:21px 22px;align-items:flex-start;gap:18px;flex-direction:column}:is([data-page="registration"], [data-page="cabinet"]) .page-intro h1{font-size:31px}:is([data-page="registration"], [data-page="cabinet"]) .page-intro .page-context{font-size:14px;margin-top:7px}:is([data-page="registration"], [data-page="cabinet"]) .participant{text-align:left;font-size:16px}:is([data-page="registration"], [data-page="cabinet"]) .route-stage{grid-template-columns:minmax(0,1fr)}:is([data-page="registration"], [data-page="cabinet"]) .route-stage__metric{min-height:0;padding:22px 20px 12px;justify-content:flex-start}:is([data-page="registration"], [data-page="cabinet"]) .route-stage__metric svg{width:145px;height:145px;left:auto;right:16px;top:8px;bottom:auto;opacity:1}:is([data-page="registration"], [data-page="cabinet"]) .distance-text{font-size:76px;letter-spacing:-.06em}:is([data-page="registration"], [data-page="cabinet"]) .distance-text small{display:inline;font-size:20px;margin-left:5px}:is([data-page="registration"], [data-page="cabinet"]) .route-stage__body{padding:12px 20px 24px}:is([data-page="registration"], [data-page="cabinet"]) .route-title{font-size:27px;line-height:1.3;margin-bottom:0}:is([data-page="registration"], [data-page="cabinet"]) .route-description{font-size:17px}:is([data-page="registration"], [data-page="cabinet"]) .status-label{margin-bottom:0}:is([data-page="registration"], [data-page="cabinet"]) .route-actions{align-items:stretch;gap:10px;flex-direction:column}:is([data-page="registration"], [data-page="cabinet"]) .route-actions .primary-button{width:100%}:is([data-page="registration"], [data-page="cabinet"]) .route-actions .plain-button{align-self:flex-start;padding-left:0}:is([data-page="registration"], [data-page="cabinet"]) .stage-footnote{grid-column:auto;padding:13px 22px}:is([data-page="registration"], [data-page="cabinet"]) .preparation{grid-template-columns:minmax(0,1fr);gap:20px;margin-block:28px;padding-top:22px}:is([data-page="registration"], [data-page="cabinet"]) .preparation .section-number{margin-bottom:13px}:is([data-page="registration"], [data-page="cabinet"]) .preparation h2{font-size:25px;max-width:13em;margin-bottom:0}:is([data-page="registration"], [data-page="cabinet"]) .preparation-body>p{font-size:17px;line-height:1.6}:is([data-page="registration"], [data-page="cabinet"]) .prep-actions{align-items:stretch;flex-direction:column;gap:14px}:is([data-page="registration"], [data-page="cabinet"]) .prep-actions .secondary-button{min-width:0;width:100%}:is([data-page="registration"], [data-page="cabinet"]) .prep-actions>a:not(.secondary-button){align-self:flex-start}:is([data-page="registration"], [data-page="cabinet"]) .service-links{font-size:16px;gap:13px 22px;margin-top:21px;padding-top:18px}:is([data-page="registration"], [data-page="cabinet"]) .empty-stage .route-stage__metric{min-height:0}:is([data-page="registration"], [data-page="cabinet"]) .empty-distance{font-size:75px}:is([data-page="registration"], [data-page="cabinet"]) .profile-surface{grid-template-columns:minmax(0,1fr);gap:20px;padding:24px 20px}:is([data-page="registration"], [data-page="cabinet"]) .profile-aside h2{font-size:25px;max-width:13em;margin-bottom:12px}:is([data-page="registration"], [data-page="cabinet"]) .profile-aside p{max-width:35em;margin:0}:is([data-page="registration"], [data-page="cabinet"]) .profile-details dd{font-size:20px}:is([data-page="registration"], [data-page="cabinet"]) .profile-form .form-actions{flex-direction:row;flex-wrap:wrap}:is([data-page="registration"], [data-page="cabinet"]) .profile-form .form-actions .primary-button{min-width:140px;width:auto;flex:1}:is([data-page="registration"], [data-page="cabinet"]) .profile-form .form-actions .secondary-button{flex:1}:is([data-page="registration"], [data-page="cabinet"]) .dialog-inner{padding:27px 20px}:is([data-page="registration"], [data-page="cabinet"]) .dialog-close{top:12px;right:12px}:is([data-page="registration"], [data-page="cabinet"]) .dialog h2{font-size:23px;letter-spacing:-.035em;margin-right:38px}:is([data-page="registration"], [data-page="cabinet"]) .dialog-description{font-size:16px;line-height:1.6}:is([data-page="registration"], [data-page="cabinet"]) .route-options{grid-template-columns:minmax(0,1fr);gap:10px}:is([data-page="registration"], [data-page="cabinet"]) .route-option{min-height:0;padding:15px;gap:11px}:is([data-page="registration"], [data-page="cabinet"]) .route-option strong{font-size:24px}:is([data-page="registration"], [data-page="cabinet"]) .route-option .route-option-title{margin-top:5px}:is([data-page="registration"], [data-page="cabinet"]) .dialog-actions{flex-direction:column;align-items:stretch;gap:12px;margin-top:22px}:is([data-page="registration"], [data-page="cabinet"]) .dialog-actions .primary-button{min-width:0;width:100%}:is([data-page="registration"], [data-page="cabinet"]) .dialog-actions .secondary-button{width:100%}:is([data-page="registration"], [data-page="cabinet"]) .sample-watermark{font-size:29px}:is([data-page="registration"], [data-page="cabinet"]) .vk-dialog .dialog-inner{padding-top:42px}:is([data-page="registration"], [data-page="cabinet"]) .vk-dialog h2{font-size:24px}:is([data-page="registration"], [data-page="cabinet"]) .visual-sheet .dialog{width:calc(100% - 24px)}}
+@media(max-width:360px){:is([data-page="registration"], [data-page="cabinet"]) .shell{width:calc(100% - 32px)}:is([data-page="registration"], [data-page="cabinet"]) .brand-name{font-size:14px}:is([data-page="registration"], [data-page="cabinet"]) .brand-mark{width:31px;height:31px}:is([data-page="registration"], [data-page="cabinet"]) .lead-mark{width:62px;height:62px;top:42px}:is([data-page="registration"], [data-page="cabinet"]) .registration-lead h1{font-size:34px}:is([data-page="registration"], [data-page="cabinet"]) .lead-eyebrow{font-size:14px;gap:8px;max-width:16em}:is([data-page="registration"], [data-page="cabinet"]) .page-intro h1{font-size:28px}:is([data-page="registration"], [data-page="cabinet"]) .page-intro{gap:14px}:is([data-page="registration"], [data-page="cabinet"]) .cabinet-tab{padding-inline:9px}:is([data-page="registration"], [data-page="cabinet"]) .route-stage__body{padding-inline:20px}:is([data-page="registration"], [data-page="cabinet"]) .route-stage__metric{padding-inline:20px}:is([data-page="registration"], [data-page="cabinet"]) .route-title{font-size:24px}:is([data-page="registration"], [data-page="cabinet"]) .stage-footnote{padding-inline:19px}:is([data-page="registration"], [data-page="cabinet"]) .dialog h2{font-size:22px}:is([data-page="registration"], [data-page="cabinet"]) .dialog-inner{padding-inline:18px}:is([data-page="registration"], [data-page="cabinet"]) .primary-button,
+:is([data-page="registration"], [data-page="cabinet"]) .secondary-button,
+:is([data-page="registration"], [data-page="cabinet"]) .vk-button{padding-inline:17px}:is([data-page="registration"], [data-page="cabinet"]) .form-actions .primary-button{font-size:18px}:is([data-page="registration"], [data-page="cabinet"]) .registration-workspace h2{font-size:25px}:is([data-page="registration"], [data-page="cabinet"]) .registration-outro .outro-title{font-size:22px}}
+@media print{:is([data-page="registration"], [data-page="cabinet"]){background:white;color:black;font:12pt/1.5 sans-serif}:is([data-page="registration"], [data-page="cabinet"])>*{display:none!important}:is([data-page="registration"], [data-page="cabinet"]) dialog[data-sample-dialog][open]{display:block!important;position:static;width:100%;max-width:none;max-height:none;margin:0;overflow:visible;color:black;background:white;box-shadow:none;border:0}:is([data-page="registration"], [data-page="cabinet"]) dialog[data-sample-dialog] .dialog-inner{padding:0}:is([data-page="registration"], [data-page="cabinet"]) .dialog-close,
+:is([data-page="registration"], [data-page="cabinet"]) .dialog-actions{display:none!important}:is([data-page="registration"], [data-page="cabinet"]) .sample-watermark{font-size:32pt;color:black!important}:is([data-page="registration"], [data-page="cabinet"]) .sample-sheet{border-color:black}:is([data-page="registration"], [data-page="cabinet"]) .sample-values dd{font-size:14pt}:is([data-page="registration"], [data-page="cabinet"]) .sample-note{font-size:12pt}:is([data-page="registration"], [data-page="cabinet"]) .sample-values{break-inside:avoid}:is([data-page="registration"], [data-page="cabinet"]) .sample-sheet{break-inside:avoid}:is([data-page="registration"], [data-page="cabinet"]) .sample-watermark:before{content:'Майская прогулка · '}}
+/* Content-bound first-render corrections: consent error must be a new block;
+   mobile section tabs remain together and the participant identity is one line. */
+:is([data-page="registration"], [data-page="cabinet"]) .consent .field-error{
+  display:block;
+}
+
+@media(max-width:650px) {
+  :is([data-page="registration"], [data-page="cabinet"]) .cabinet-nav{
+    flex-wrap:wrap;
+    gap:7px 15px;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .cabinet-nav-tabs{
+    width:100%;
+    flex-wrap:nowrap;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .cabinet-tab{
+    flex:0 1 auto;
+    min-width:0;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .exit-link{
+    margin-left:auto;
+    max-width:none;
+    padding-top:0;
+    line-height:1.5;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .participant{
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+    align-items:baseline;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .participant br{
+    display:none;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .page-intro{
+    gap:12px;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .route-stage__metric{
+    min-height:0;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .route-stage__metric svg{
+    width:110px;
+    height:110px;
+    top:0;
+  }
+
+}
+
+@media(max-width:650px){:is([data-page="registration"], [data-page="cabinet"]) .cabinet-nav{flex-wrap:wrap;gap:7px 15px}:is([data-page="registration"], [data-page="cabinet"]) .cabinet-nav-tabs{width:100%;flex-wrap:nowrap}:is([data-page="registration"], [data-page="cabinet"]) .cabinet-tab{flex:0 1 auto;min-width:0}:is([data-page="registration"], [data-page="cabinet"]) .exit-link{margin-left:auto;max-width:none;padding-top:0;line-height:1.5}:is([data-page="registration"], [data-page="cabinet"]) .participant{display:flex;gap:8px;flex-wrap:wrap;align-items:baseline}:is([data-page="registration"], [data-page="cabinet"]) .participant br{display:none}:is([data-page="registration"], [data-page="cabinet"]) .page-intro{gap:12px}:is([data-page="registration"], [data-page="cabinet"]) .route-stage__metric{min-height:0}:is([data-page="registration"], [data-page="cabinet"]) .route-stage__metric svg{width:110px;height:110px;top:0}}
+/* The real30+3km entity has a longer display token; only that display role
+   changes its optical size. Labels, inputs, actions and legal type stay fixed. */
+:is([data-page="registration"], [data-page="cabinet"]) .route-stage[data-route-id="r30plus3"] .distance-text{
+  font-size:clamp(72px,8.1vw,116px);
+  letter-spacing:-.065em;
+}
+
+@media(max-width:900px) {
+  :is([data-page="registration"], [data-page="cabinet"]) .route-stage[data-route-id="r30plus3"] .distance-text{
+    font-size:76px;
+  }
+
+}
+
+@media(max-width:650px) {
+  :is([data-page="registration"], [data-page="cabinet"]) .route-stage[data-route-id="r30plus3"] .distance-text{
+    font-size:62px;
+  }
+
+}
+
+@media(min-width:651px) and (max-width:900px) {
+  :is([data-page="registration"], [data-page="cabinet"]) .route-stage{
+    grid-template-columns:minmax(0,1fr);
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .route-stage__metric{
+    min-height:0;
+    padding:20px 30px 12px;
+    justify-content:flex-start;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .route-stage__metric svg{
+    width:132px;
+    height:132px;
+    left:auto;
+    right:28px;
+    top:0;
+    bottom:0;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .route-stage__body{
+    padding:20px 30px 28px;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .stage-footnote{
+    grid-column:auto;
+  }
+
+}
+
+@media(max-width:900px){:is([data-page="registration"], [data-page="cabinet"]) .route-stage[data-route-id="r30plus3"] .distance-text{font-size:76px}}
+@media(max-width:650px){:is([data-page="registration"], [data-page="cabinet"]) .route-stage[data-route-id="r30plus3"] .distance-text{font-size:62px}}
+/* V4-LEGACY-TEXT-01: a220px tablet metric cannot contain the real30+3 token.
+   Turn the selected-route relationship into a full-width stage before that pinch. */
+@media(min-width:651px) and (max-width:900px){:is([data-page="registration"], [data-page="cabinet"]) .route-stage{grid-template-columns:minmax(0,1fr)}:is([data-page="registration"], [data-page="cabinet"]) .route-stage__metric{min-height:0;padding:20px 30px 12px;justify-content:flex-start}:is([data-page="registration"], [data-page="cabinet"]) .route-stage__metric svg{width:132px;height:132px;left:auto;right:28px;top:0;bottom:0}:is([data-page="registration"], [data-page="cabinet"]) .route-stage__body{padding:20px 30px 28px}:is([data-page="registration"], [data-page="cabinet"]) .stage-footnote{grid-column:auto}}
+/* V4-LEGACY-TEXT-02: action allocation follows whole label width before wrapping. */
+:is([data-page="registration"], [data-page="cabinet"]) .profile-form .form-actions{
+  display:flex;
+  flex-wrap:wrap;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .profile-form .form-actions .primary-button,
+:is([data-page="registration"], [data-page="cabinet"]) .profile-form .form-actions .secondary-button{
+  flex:1 1 max-content;
+  min-width:0;
+  width:auto;
+}
+
+/* Disabled preview has an actual semantic state and a visible quiet treatment. */
+:is([data-page="registration"], [data-page="cabinet"]) 
+button.primary-button:disabled,
+:is([data-page="registration"], [data-page="cabinet"]) button.secondary-button:disabled,
+:is([data-page="registration"], [data-page="cabinet"]) button.vk-button:disabled,
+:is([data-page="registration"], [data-page="cabinet"]) button.primary-button:disabled:hover,
+:is([data-page="registration"], [data-page="cabinet"]) button.secondary-button:disabled:hover,
+:is([data-page="registration"], [data-page="cabinet"]) button.vk-button:disabled:hover{
+  opacity:.55;
+  background:var(--disabled-bg,#DEDCE2);
+  color:var(--disabled-ink,#665E6E);
+  border-color:var(--line);
+  cursor:not-allowed;
+  filter:none;
+}
+
+/* Content-led reflow: words and related regions must fit their available measure,
+:is([data-page="registration"], [data-page="cabinet"]) including larger text. Font roles remain unchanged; no clipping or ellipsis. */
+:is([data-page="registration"], [data-page="cabinet"]) 
+body{
+  overflow-wrap:anywhere;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .global-header,
+:is([data-page="registration"], [data-page="cabinet"]) .cabinet-nav,
+:is([data-page="registration"], [data-page="cabinet"]) .page-intro,
+:is([data-page="registration"], [data-page="cabinet"]) .registration-workspace-head{
+  flex-wrap:wrap;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .brand,
+:is([data-page="registration"], [data-page="cabinet"]) .brand-name,
+:is([data-page="registration"], [data-page="cabinet"]) .header-links,
+:is([data-page="registration"], [data-page="cabinet"]) .header-links>*,
+:is([data-page="registration"], [data-page="cabinet"]) .cabinet-nav-tabs,
+:is([data-page="registration"], [data-page="cabinet"]) .cabinet-tab,
+:is([data-page="registration"], [data-page="cabinet"]) .page-intro>*,
+:is([data-page="registration"], [data-page="cabinet"]) .registration-workspace-head>*,
+:is([data-page="registration"], [data-page="cabinet"]) .registration-outro>*,
+:is([data-page="registration"], [data-page="cabinet"]) .site-footer>*,
+:is([data-page="registration"], [data-page="cabinet"]) .site-footer-links,
+:is([data-page="registration"], [data-page="cabinet"]) .site-footer-links>a{
+  min-inline-size:0;
+  max-inline-size:100%;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .brand{
+  flex-shrink:1;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .cabinet-nav-tabs{
+  flex-wrap:wrap;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .cabinet-tab{
+  flex:0 1 max-content;
+  overflow-wrap:anywhere;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .registration-lead h1,
+:is([data-page="registration"], [data-page="cabinet"]) .registration-lead h1 span,
+:is([data-page="registration"], [data-page="cabinet"]) .page-intro h1,
+:is([data-page="registration"], [data-page="cabinet"]) .profile-aside h2,
+:is([data-page="registration"], [data-page="cabinet"]) .preparation h2{
+  min-inline-size:0;
+  max-inline-size:100%;
+  overflow-wrap:anywhere;
+  hyphens:auto;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .participant,
+:is([data-page="registration"], [data-page="cabinet"]) .participant strong{
+  min-inline-size:0;
+  max-inline-size:100%;
+  overflow-wrap:anywhere;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .site-footer-links>a{
+  overflow-wrap:anywhere;
+  hyphens:auto;
+}
+
+/* Two related regions retain the previous2:3 allocation when they fit. Their
+   font-relative bases move the complete relationship into normal flow when not. */
+:is([data-page="registration"], [data-page="cabinet"]) 
+.preparation,
+:is([data-page="registration"], [data-page="cabinet"]) .profile-surface{
+  display:flex;
+  flex-wrap:wrap;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .preparation>:first-child,
+:is([data-page="registration"], [data-page="cabinet"]) .profile-surface>:first-child{
+  flex:.9 1 16em;
+  min-inline-size:0;
+  max-inline-size:100%;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .preparation-body,
+:is([data-page="registration"], [data-page="cabinet"]) .profile-body{
+  flex:1.35 1 24em;
+  min-inline-size:0;
+  max-inline-size:100%;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .route-stage{
+  display:flex;
+  flex-wrap:wrap;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .route-stage__metric{
+  flex:.9 1 18em;
+  min-inline-size:0;
+  max-inline-size:100%;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .route-stage__body{
+  flex:1.35 1 27em;
+  min-inline-size:0;
+  max-inline-size:100%;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .stage-footnote{
+  flex:1 0 100%;
+  min-inline-size:0;
+  max-inline-size:100%;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .distance-text{
+  min-inline-size:0;
+  max-inline-size:100%;
+  white-space:normal;
+  overflow-wrap:anywhere;
+}
+
+@media(max-width:900px) {
+  :is([data-page="registration"], [data-page="cabinet"]) .preparation>:first-child,
+:is([data-page="registration"], [data-page="cabinet"]) .profile-surface>:first-child{
+    flex:.75 1 15em;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .preparation-body,
+:is([data-page="registration"], [data-page="cabinet"]) .profile-body{
+    flex:1.25 1 25em;
+  }
+
+}
+
+@media(min-width:651px) and (max-width:900px) {
+  :is([data-page="registration"], [data-page="cabinet"]) .route-stage__metric,
+:is([data-page="registration"], [data-page="cabinet"]) .route-stage__body{
+    flex-basis:100%;
+  }
+
+}
+
+@media(max-width:650px) {
+  :is([data-page="registration"], [data-page="cabinet"]) .cabinet-nav-tabs{
+    flex-basis:100%;
+    flex-wrap:wrap;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .distance-text small{
+    display:inline-block;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .preparation>:first-child,
+:is([data-page="registration"], [data-page="cabinet"]) .preparation-body,
+:is([data-page="registration"], [data-page="cabinet"]) .profile-surface>:first-child,
+:is([data-page="registration"], [data-page="cabinet"]) .profile-body{
+    flex-basis:100%;
+  }
+
+}
+
+@media(max-width:900px){:is([data-page="registration"], [data-page="cabinet"]) .preparation>:first-child,
+:is([data-page="registration"], [data-page="cabinet"]) .profile-surface>:first-child{flex:.75 1 15em}:is([data-page="registration"], [data-page="cabinet"]) .preparation-body,
+:is([data-page="registration"], [data-page="cabinet"]) .profile-body{flex:1.25 1 25em}}
+@media(min-width:651px) and (max-width:900px){:is([data-page="registration"], [data-page="cabinet"]) .route-stage__metric,
+:is([data-page="registration"], [data-page="cabinet"]) .route-stage__body{flex-basis:100%}}
+@media(max-width:650px){:is([data-page="registration"], [data-page="cabinet"]) .cabinet-nav-tabs{flex-basis:100%;flex-wrap:wrap}:is([data-page="registration"], [data-page="cabinet"]) .distance-text small{display:inline-block}:is([data-page="registration"], [data-page="cabinet"]) .preparation>:first-child,
+:is([data-page="registration"], [data-page="cabinet"]) .preparation-body,
+:is([data-page="registration"], [data-page="cabinet"]) .profile-surface>:first-child,
+:is([data-page="registration"], [data-page="cabinet"]) .profile-body{flex-basis:100%}}
+
+/* Keep the ending of the display word together. */
+:is([data-page="registration"], [data-page="cabinet"]) .registration-lead h1 .word-ending{
+  display:inline-block;
+  white-space:nowrap;
+  overflow-wrap:normal;
+  hyphens:none;
+  max-inline-size:none;
+}
+
+/* Text actions have a resting accent and never use an underline in any state.
+   Header account action is scoped by screen/order,
+:is([data-page="registration"], [data-page="cabinet"]) independent of offline URLs. */
+:is([data-page="registration"], [data-page="cabinet"]) 
+:is(.primary-button,
+:is([data-page="registration"], [data-page="cabinet"]) .secondary-button,
+:is([data-page="registration"], [data-page="cabinet"]) .vk-button,
+:is([data-page="registration"], [data-page="cabinet"]) .plain-button,
+:is([data-page="registration"], [data-page="cabinet"]) .return-login a,
+:is([data-page="registration"], [data-page="cabinet"]) .preview-link,
+:is([data-page="registration"], [data-page="cabinet"]) .exit-link,
+:is([data-page="registration"], [data-page="cabinet"]) .prep-actions>a:not(.primary-button):not(.secondary-button):not(.vk-button),
+:is([data-page="registration"], [data-page="cabinet"]) [data-runtime-fallback] a,
+:is([data-page="registration"], [data-page="cabinet"])[data-screen="registration"] .header-links a:last-child){
+  text-decoration:none;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .return-login a,
+:is([data-page="registration"], [data-page="cabinet"]) .preview-link,
+:is([data-page="registration"], [data-page="cabinet"])[data-screen="registration"] .header-links a:last-child{
+  color:var(--accent);
+  font-weight:800;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .return-login a:hover,
+:is([data-page="registration"], [data-page="cabinet"]) .preview-link:hover,
+:is([data-page="registration"], [data-page="cabinet"])[data-screen="registration"] .header-links a:last-child:hover{
+  color:var(--primary-hover);
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .prep-actions>a:not(.primary-button):not(.secondary-button):not(.vk-button),
+:is([data-page="registration"], [data-page="cabinet"]) [data-runtime-fallback] a{
+  color:var(--focus);
+  font-weight:750;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .cabinet-nav .exit-link{
+  color:var(--ink);
+  font-weight:700;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .route-stage .plain-button{
+  color:var(--stage-action);
+  font-weight:700;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .route-stage .plain-button:hover{
+  color:var(--stage-ink);
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .route-stage :is(.primary-button,
+:is([data-page="registration"], [data-page="cabinet"]) .plain-button):focus-visible{
+  outline-color:var(--stage-ink);
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) [data-runtime-fallback] a{
+  font-size:16px;
+}
+
+/* Supporting navigation and ordinary footer links retain link-state signifiers. */
+:is([data-page="registration"], [data-page="cabinet"]) 
+.service-links>a,
+:is([data-page="registration"], [data-page="cabinet"]) .site-footer-links a{
+  text-decoration:none;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .service-links>a:hover,
+:is([data-page="registration"], [data-page="cabinet"]) .service-links>a:focus-visible,
+:is([data-page="registration"], [data-page="cabinet"]) .site-footer-links a:hover,
+:is([data-page="registration"], [data-page="cabinet"]) .site-footer-links a:focus-visible{
+  text-decoration:underline;
+}
+
+
+
+
+:is([data-page="registration"], [data-page="cabinet"]){
+  --font-ui:UnboundedLegacy,Arial,sans-serif;
+  --font-display:UnboundedLegacy,Arial,sans-serif;
+  --display-weight:500;
+  --canvas:#00B015;
+  --ink:#00350B;
+  --muted:#00350B;
+  --line:#05851B77;
+  --focus:#00350B;
+  --accent:#FF542E;
+  --field-border:#05851B;
+  --field-bg:#fff;
+  --input-placeholder:#397343;
+  --field-radius:10px;
+  --button-radius:10px;
+  --primary-bg:#05851B;
+  --primary-ink:#fff;
+  --primary-hover:#006A12;
+  --hover-bg:#E8F5DC;
+  --nav-active-bg:#fff;
+  --nav-active-ink:#05851B;
+  --stage-bg:#fff;
+  --stage-ink:#05851B;
+  --stage-radius:24px;
+  --metric-mark:#FECC00;
+  --stage-action:#05851B;
+  --stage-action-ink:#fff;
+  --stage-line:#05851B55;
+  --selected-bg:#E8F5DC;
+  --dialog-bg:#fff;
+  --dialog-radius:24px;
+  --sample-ink:#E34922;
+  --error:#AC253A;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]){
+  font-weight:400;
+  letter-spacing:-.018em;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .global-header{
+  position:relative;
+  isolation:isolate;
+  border-bottom-color:transparent;
+  color:#05851B;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .global-header::before{
+  content:'';
+  position:absolute;
+  inset:12px -14px;
+  background:#fff;
+  border-radius:24px;
+  z-index:-1;
+  pointer-events:none;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .brand-mark{
+  background:url('../../assets/images/brand-mark-bg.png') center/contain no-repeat;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .brand-mark>*{
+  visibility:hidden;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .brand-name{
+  font-weight:600;
+  letter-spacing:-.055em;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .header-links a{
+  font-weight:400;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .demo-label{
+  font-weight:450;
+  border-color:#05851B;
+  background:#FECC00;
+  color:#00350B;
+  letter-spacing:-.01em;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .cabinet-tab{
+  font-weight:450;
+  letter-spacing:-.025em;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .cabinet-tab:hover:not([aria-selected=true]){
+  background:#FFFFFF44;
+  color:#00350B;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .exit-link{
+  font-weight:400;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .page-intro h1{
+  font-weight:500;
+  letter-spacing:-.045em;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .participant strong{
+  font-weight:550;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .route-stage__metric{
+  background:url('../../assets/images/route-stage-metric-bg.png') center/auto 290px no-repeat;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .route-stage__metric svg{
+  visibility:hidden;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .distance-text{
+  background:#FF542E;
+  color:#fff;
+  padding:.045em .1em .09em .055em;
+  letter-spacing:-.065em;
+  line-height:.98;
+  font-weight:650;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .distance-text small{
+  font-weight:450;
+  letter-spacing:-.025em;
+  line-height:1.3;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .route-kicker{
+  font-weight:450;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .route-kicker::before{
+  background:#FECC00;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .route-title{
+  font-weight:500;
+  letter-spacing:-.045em;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .route-description{
+  letter-spacing:-.025em;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .status-label{
+  font-weight:450;
+  letter-spacing:-.02em;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .stage-footnote{
+  color:#397343;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .primary-button,
+:is([data-page="registration"], [data-page="cabinet"]) .secondary-button,
+:is([data-page="registration"], [data-page="cabinet"]) .vk-button{
+  font-weight:500;
+  letter-spacing:-.025em;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .plain-button{
+  font-weight:450;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .preparation .section-number{
+  font-weight:450;
+  letter-spacing:.01em;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .preparation h2{
+  font-weight:500;
+  letter-spacing:-.04em;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .preparation .secondary-button{
+  background:#fff;
+  border-color:#05851B;
+  color:#05851B;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .preparation .secondary-button:hover{
+  background:#E8F5DC;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .profile-surface{
+  position:relative;
+  isolation:isolate;
+  border-top-color:transparent;
+  color:#05851B;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .profile-surface::before{
+  content:'';
+  position:absolute;
+  inset:0;
+  background:#fff;
+  border-radius:24px;
+  z-index:-1;
+  pointer-events:none;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .profile-avatar{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:85px;
+  height:85px;
+  background:#FECC00;
+  color:#05851B;
+  font-family:var(--font-ui);
+  font-weight:500;
+  font-size:43px;
+  line-height:1;
+  margin-bottom:20px;
+  border-radius:50%;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .profile-aside h2{
+  font-weight:500;
+  letter-spacing:-.04em;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .profile-details dt,
+:is([data-page="registration"], [data-page="cabinet"]) .field label{
+  font-weight:450;
+  letter-spacing:-.02em;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .profile-details dd{
+  font-weight:450;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .field input{
+  font-weight:400;
+  letter-spacing:-.02em;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .field input:focus{
+  border-color:#05851B;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .profile-feedback{
+  color:#397343;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .dialog h2{
+  font-weight:500;
+  letter-spacing:-.045em;
+  color:#05851B;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .dialog-description{
+  color:#397343;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .dialog-close{
+  border-color:#05851B;
+  color:#05851B;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .route-option{
+  color:#05851B;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .route-option:has(input:checked){
+  box-shadow:inset 0 -3px 0 #05851B;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .route-option strong{
+  font-weight:500;
+  letter-spacing:-.035em;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .route-option .route-option-title{
+  font-weight:450;
+  letter-spacing:-.02em;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .route-options legend{
+  font-weight:450;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .sample-watermark{
+  font-weight:600;
+  letter-spacing:-.04em;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .sample-values dt{
+  font-weight:450;
+  color:#397343;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .sample-values dd{
+  font-weight:450;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .sample-note{
+  color:#05851B;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .empty-stage .route-stage__metric{
+  background-size:auto 250px;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .empty-distance{
+  color:#05851B;
+  font-weight:500;
+  background:#fff;
+  padding:.08em .1em;
+}
+
+:is([data-page="registration"], [data-page="cabinet"]) .visual-sheet-title{
+  font-weight:500;
+}
+
+@media(max-width:900px) {
+  :is([data-page="registration"], [data-page="cabinet"]) .distance-text{
+    font-size:108px;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .route-stage__metric{
+    background-size:auto 250px;
+  }
+
+}
+
+@media(max-width:650px) {
+  :is([data-page="registration"], [data-page="cabinet"]) .global-header::before{
+    inset:9px -8px;
+    border-radius:20px;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .brand-name{
+    font-weight:600;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .page-intro h1{
+    font-weight:500;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .route-stage__metric{
+    background-size:auto 170px;
+    background-position:right 14px center;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .distance-text{
+    font-size:76px;
+    padding:.035em .12em .08em .075em;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .distance-text small{
+    display:inline;
+    font-size:20px;
+    margin-left:5px;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .route-stage__body{
+    border-left:0;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .route-title{
+    font-weight:500;
+    letter-spacing:-.045em;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .profile-surface::before{
+    border-radius:20px;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .profile-avatar{
+    width:64px;
+    height:64px;
+    font-size:32px;
+    margin-bottom:17px;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .empty-stage .route-stage__metric{
+    background-size:auto 155px;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .empty-distance{
+    font-size:75px;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .dialog h2{
+    letter-spacing:-.04em;
+  }
+
+}
+
+@media print {
+  :is([data-page="registration"], [data-page="cabinet"]){
+    background:#fff;
+    color:#000;
+  }
+
+  :is([data-page="registration"], [data-page="cabinet"]) .sample-watermark{
+    color:#000!important;
+  }
+
+}

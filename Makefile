@@ -23,7 +23,11 @@ GO_MAIN=./cmd/server/main.go
 GO_DOCS=./cmd/docs/main.go
 LDFLAGS=-ldflags "-X main.BuildTime=$(GET_DATE)"
 
-.PHONY: all back-build back-run back-clean docs back-test back-generate back-migrate back-migrate-down help
+FRONTEND_DIR=frontend
+FRONT_IMAGE?=maywalk-frontend
+FRONT_PORT?=8082
+
+.PHONY: all back-build back-run back-clean docs back-test back-generate back-migrate back-migrate-down front-dev front-run front-build front-lint front-test front-generate help
 
 # =================================
 # |          make help            |
@@ -69,3 +73,28 @@ back-migrate: ## Применение миграции
 
 back-migrate-down: ## Откат миграции
 	cd $(BACKEND_DIR) && migrate -path ./migrations -database $(DB_URL) down
+
+# ================
+# | Фронтенд (frontend/)
+# ================
+
+front-dev: ## Запуск dev-сервера Vite (локально, :5173)
+	cd $(FRONTEND_DIR) && npm run dev
+
+front-build: ## Сборка docker-образа фронтенда
+	docker build -t $(FRONT_IMAGE) -f $(FRONTEND_DIR)/Dockerfile .
+
+front-run: ## Сборка и запуск фронтенда в docker (:$(FRONT_PORT))
+	docker rm -f $(FRONT_IMAGE) 2>/dev/null || true
+	docker build -t $(FRONT_IMAGE) -f $(FRONTEND_DIR)/Dockerfile .
+	docker run -d --name $(FRONT_IMAGE) -p $(FRONT_PORT):80 $(FRONT_IMAGE)
+	@echo "Фронтенд: http://localhost:$(FRONT_PORT)"
+
+front-lint: ## Линтер фронтенда
+	cd $(FRONTEND_DIR) && npm run lint
+
+front-test: ## Юнит-тесты фронтенда
+	cd $(FRONTEND_DIR) && npm run test
+
+front-generate: ## Генерация TS-типов из api/openapi.yml
+	cd $(FRONTEND_DIR) && npm run generate:api

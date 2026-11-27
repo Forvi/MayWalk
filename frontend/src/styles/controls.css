@@ -1,0 +1,64 @@
+/*
+ * Служебные стили приложения вне скинов страниц.
+ * Оформление страниц живёт в src/styles/pages/.
+ */
+
+/* «Выйти» в кабинете: в макете это ссылка, здесь — кнопка. Сохраняем вид ссылки. */
+button.exit-link {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+}
+
+/*
+ * Страница «не найдено»: автономная, в зелёной палитре оригинальной
+ * концепции, не зависит от скинов семейcтв страниц.
+ */
+.nf-shell {
+  min-height: 100dvh;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: #00b015;
+  color: #00350b;
+  font: 17px/1.55 Onest, Arial, sans-serif;
+}
+
+.nf-shell main {
+  max-width: 34em;
+}
+
+.nf-shell h1 {
+  margin: 0 0 10px;
+  font-size: clamp(28px, 5vw, 44px);
+  line-height: 1.15;
+}
+
+.nf-shell p {
+  margin: 0 0 22px;
+  font-size: 18px;
+}
+
+.nf-shell nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.nf-shell a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 46px;
+  padding: 10px 18px;
+  border: 1px solid #00350b;
+  background: #fff;
+  color: #05851b;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.nf-shell a:hover {
+  background: #05851b;
+  color: #fff;
+}
